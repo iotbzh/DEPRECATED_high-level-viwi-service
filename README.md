@@ -7,7 +7,12 @@ implements subscribe/unsubscribe/get verbs for the clients.
 
 # build
 ```bash
-mkdir build;cd build; cmake ..; make
+git submodule init
+git submodule update
+mkdir build
+cd build
+cmake ..
+make
 ```
 # launching
 natively under linux you can launch afb-daemon with the low-level and high-level bindings with a command like:
