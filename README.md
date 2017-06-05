@@ -14,6 +14,9 @@ cd build
 cmake ..
 make
 ```
+
+> ! WARNING don't forget to initialize submodule needed to build the project.
+
 # launching
 natively under linux you can launch afb-daemon with the low-level and high-level bindings with a command like:
 
