@@ -1,0 +1,17 @@
+.vscode
+.kdev4
+*.kdev4
+*.swp
+*.kate-swp
+.vs
+*.sln
+*.vcxproj
+*.user
+obj
+build
+bin
+src/configuration-generated.cpp
+docs_doxygen
+node_modules/
+packaging/
+_book/

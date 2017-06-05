@@ -1,0 +1,4 @@
+[submodule "conf.d/templates"]
+	path = conf.d/templates
+	url = https://gerrit.automotivelinux.org/gerrit/apps/app-templates
+	branch = reference

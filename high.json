@@ -1,0 +1,115 @@
+{
+	"resources": [{
+		"name": "/car/doors/",
+		"values": [{
+				"name": "front_left",
+				"position": "front_left",
+				"isDoorOpen": "${messages.doors.front_left.open,-1}",
+				"isWindowOpen": "${messages.windows.front_left.open,-1}"
+			},
+			{
+				"name": "front_right",
+				"position": "front_right",
+				"isDoorOpen": "${messages.doors.front_right.open,-1}",
+				"isWindowOpen": "${messages.windows.front_right.open,-1}"
+			},
+			{
+				"name": "rear_left",
+				"position": "rear_left",
+				"isDoorOpen": "${messages.doors.rear_left.open,-1}",
+				"isWindowOpen": "${messages.windows.rear_left.open,-1}"
+			},
+			{
+				"name": "rear_right",
+				"position": "rear_right",
+				"isDoorOpen": "${messages.doors.rear_right.open,-1}",
+				"isWindowOpen": "${messages.windows.rear_right.open,-1}"
+			}
+		]
+	}, {
+		"name": "/car/demoboard/",
+		"values": [{
+			"name": "vehicleSpeed",
+			"unit": "km/h",
+			"speed": "${diagnostic_messages.vehicle.speed,10000}"
+		}, {
+			"name": "engineSpeed",
+			"unit": "rpm",
+			"rpm": "${diagnostic_messages.engine.speed,10000}"
+		}, {
+			"name": "fuelLevel",
+			"unit": "litre",
+			"level": "${diagnostic_messages.fuel.level,10000}"
+		}, {
+			"name": "engineLoad",
+			"unit": "Nm",
+			"load": "${diagnostic_messages.engine.load,10000}"
+		}]
+	}],
+
+	"definitions": [{
+		"name": "/car/doors/",
+		"properties": {
+			"id": {
+				"type": "string",
+				"description": "identifier"
+			},
+			"uri": {
+				"type": "string",
+				"description": "object uri"
+			},
+			"name": {
+				"type": "string",
+				"description": "name"
+			},
+			"position": {
+				"type": "string",
+				"description": "the vehicle door position"
+			},
+			"isDoorOpen": {
+				"type": "boolean",
+				"description": "the door state; set to 'true' if the door is open"
+			},
+			"isWindowOpen": {
+				"type": "boolean",
+				"description": "the window state of this door; set to 'true' if window is open; set to JSON-undefined if window state is unknown or invalid"
+			}
+		}
+	}, {
+		"name": "/car/demoboard/",
+		"properties": {
+			"id": {
+				"type": "string",
+				"description": "identifier"
+			},
+			"uri": {
+				"type": "string",
+				"description": "object uri"
+			},
+			"name": {
+				"type": "string",
+				"description": "name"
+			},
+			"unit": {
+				"type": "string",
+				"description": "units"
+			},
+			"speed": {
+				"type": "double",
+				"description": "vehicle centerpoint speed as shown by the instrument cluster"
+			},
+			"rpm": {
+				"type": "double",
+				"description": "engine rotations per minute"
+			},
+			"level": {
+				"type": "double",
+				"description": "level of tankage"
+			},
+			"load": {
+				"type": "double",
+				"description": "engine load"
+			}
+		}
+	}]
+}
