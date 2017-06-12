@@ -18,14 +18,14 @@
 ###########################################################################
 
 # Add target to project dependency list
-PROJECT_TARGET_ADD(high-can-binding)
+PROJECT_TARGET_ADD(high-can)
 
 	# Define project Targets
-        add_library(${TARGET_NAME} MODULE ${TARGET_NAME}.cpp high-can-binding-hat.cpp high.cpp)
+        add_library(${TARGET_NAME} MODULE ${TARGET_NAME}-binding.cpp high-can-binding-hat.cpp high.cpp)
 
 	# Binder exposes a unique public entry point
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
-	PREFIX ""
+	PREFIX "afs-"
         LABELS "BINDING"
 	LINK_FLAGS ${BINDINGS_LINK_FLAG}
 		OUTPUT_NAME ${TARGET_NAME}

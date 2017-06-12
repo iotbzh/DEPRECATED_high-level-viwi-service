@@ -19,7 +19,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.3)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/conf.d/config.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/conf.d/templates/cmake/common.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/conf.d/app-templates/cmake/common.cmake)
 
 # Bindings to compile
 # --------------------

@@ -18,20 +18,20 @@
 
 # Project Info
 # ------------------
-set(NAME high-can-project)
-set(VERSION "1.0")
-set(PRETTY_NAME "High level CAN binding")
-set(DESCRIPTION "Expose CAN Low Level APIs through AGL Framework")
-set(URL "https://github.com/iotbzh/CAN_signaling")
+set(PROJECT_NAME high-can-service)
+set(PROJECT_VERSION "1.0")
+set(PROJECT_PRETTY_NAME "High level CAN service")
+set(PROJECT_DESCRIPTION "Expose CAN Low Level APIs through AGL Framework")
+set(PROJECT_URL "https://github.com/iotbzh/CAN_signaling")
 set(PROJECT_ICON "icon.png")
-set(PROJECT_AUTHOR "Last Name, First Name")
-set(PROJECT_AUTHOR_MAIL "example.man@bigouden.bzh")
+set(PROJECT_AUTHOR "Romain Forlot")
+set(PROJECT_AUTHOR_MAIL "romain.forlot@iot.bzh")
 set(PROJECT_LICENCE "APL2.0")
 set(PROJECT_LANGUAGES,"C")
 
 # Where are stored default templates files from submodule or subtree app-templates in your project tree
 # relative to the root project directory
-set(PROJECT_APP_TEMPLATES_DIR "conf.d/templates")
+set(PROJECT_APP_TEMPLATES_DIR "conf.d/app-templates")
 
 # Where are stored config.xml.in and icon.png.in files. Template available at :
 # https://gerrit.automotivelinux.org/gerrit/#/admin/projects/apps/app-templates
@@ -50,7 +50,7 @@ set(CMAKE_BUILD_TYPE "DEBUG")
 
 # Compiler selection if needed. Impose a minimal version.
 # -----------------------------------------------
-set (gcc_minimal_version 4.9) 
+set (gcc_minimal_version 4.9)
 
 # PKG_CONFIG required packages
 # -----------------------------
@@ -79,6 +79,34 @@ set(CMAKE_INSTALL_PREFIX $ENV{HOME}/opt)
 set(CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX}/lib64/pkgconfig ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
 set(LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib64 ${CMAKE_INSTALL_PREFIX}/lib)
 
+# Optional location for config.xml.in
+# -----------------------------------
+set(WIDGET_CONFIG_TEMPLATE ${CMAKE_CURRENT_SOURCE_DIR}/conf.d/wgt/config.xml.in)
+
+# Mandatory widget Mimetype specification of the main unit
+# --------------------------------------------------------------------------
+# Choose between :
+#- text/html : HTML application,
+#	content.src designates the home page of the application
+#
+#- application/vnd.agl.native : AGL compatible native,
+#	content.src designates the relative path of the binary.
+#
+# - application/vnd.agl.service: AGL service, content.src is not used.
+#
+#- ***application/x-executable***: Native application,
+#	content.src designates the relative path of the binary.
+#	For such application, only security setup is made.
+#
+set(WIDGET_TYPE application/vnd.agl.service)
+
+# Mandatory Widget entry point file of the main unit
+# --------------------------------------------------------------
+# This is the file that will be executed, loaded,
+# at launch time by the application framework.
+#
+set(WIDGET_ENTRY_POINT "lib/afs-high-can.so")
+
 # Optional dependencies order
 # ---------------------------
 #set(EXTRA_DEPENDENCIES_ORDER)
@@ -89,38 +117,22 @@ set(LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib64 ${CMAKE_INSTALL_PREFIX}/lib)
 
 # Optional extra libraries
 # -------------------------
-#set(EXTRA_LINK_LIBRARIES boost_system)
+#set(EXTRA_LINK_LIBRARIES)
 
 # Optional force binding installation
 # ------------------------------------
 # set(BINDINGS_INSTALL_PREFIX PrefixPath )
 
-# Optional force widget prefix generation
-# ------------------------------------------------
-# set(WIDGET_PREFIX DestinationPath)
-
-# Optional Widget entry point file.
-# ---------------------------------------------------------
- # This is the file that will be executed, loaded,...
-# at launch time by the application framework
-
-# set(WIDGET_ENTRY_POINT EntryPoint_Path)
-
-# Optional Widget Mimetype specification
-# --------------------------------------------------
-# Choose between :
-# - application/x-executable
-# - application/vnd.agl.url
-# - application/vnd.agl.service
-# - application/vnd.agl.native
-# - text/vnd.qt.qml
-# - text/html
-# - application/vnd.agl.qml
-# - application/vnd.agl.qml.hybrid
-# - application/vnd.agl.html.hybrid
-#
-# set(WIDGET_TYPE MimeType)
-
 # Optional force binding Linking flag
 # ------------------------------------
 # set(BINDINGS_LINK_FLAG LinkOptions )
+
+# Optional force package prefix generation, like widget
+# -----------------------------------------------------
+# set(PACKAGE_PREFIX DestinationPath)
+
+# Optional Application Framework security token
+# and port use for remote debugging.
+#------------------------------------------------------------
+#set(AFB_TOKEN   ""      CACHE PATH "Default AFB_TOKEN")
+#set(AFB_REMPORT "1234" CACHE PATH "Default AFB_TOKEN")
