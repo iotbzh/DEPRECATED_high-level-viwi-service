@@ -1,0 +1,13 @@
+{% extends "./page.html" %}
+{% block body %}
+<div id="pdf-header" class="pdf-header">
+    <span class="header-left">IoT.Bzh</span>
+    <span class="header-right">{{ config.title }}</span>
+</div>
+
+<!-- Allow to hide header for some pages using hidepageheaders config in book.json -->
+<script>
+    if (({% for num in config.hidepageheaders %}{{ page.num }} == {{ num }} || {% endfor %}false)) document.getElementById('pdf-header').style.display = 'none'
+</script>
+
+{% endblock %}

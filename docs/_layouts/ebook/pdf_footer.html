@@ -1,0 +1,13 @@
+{% extends "./page.html" %}
+{% block body %}
+<div id="pdf-footer" class="pdf-footer">
+    <span class="footer-left">Version {{ config.version }}</span>
+    <span class="footer-right">{{ page.num }}</span>
+    <span class="footer-center">{{ config.published }}</span>
+</div>
+
+<!-- Allow to hide footer for some pages using hidepagefooters config in book.json -->
+<script>
+    if (({% for num in config.hidepagefooters %}{{ page.num }} == {{ num }} || {% endfor %}false)) document.getElementById('pdf-footer').style.display = 'none'
+</script>
+{% endblock %}

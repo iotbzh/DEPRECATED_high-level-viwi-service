@@ -1,0 +1,386 @@
+/* IoT.Bzh theaming */
+
+h1 {
+    color: #330066;
+    border-bottom: 2px solid #330066;
+}
+
+h2 {
+    color: #330066;
+}
+
+h3 {
+    color: #330066;
+}
+
+h4 {
+    color: #330066;
+}
+
+
+/* GENERAL ELEMENTS */
+
+/* clear both */
+
+.clear {
+    clear: both;
+}
+
+.section> :last-child {
+    margin-bottom: 0 !important;
+}
+
+.section> :first-child {
+    margin-top: 0 !important;
+}
+
+
+/* SPECIAL ELEMENTS */
+
+
+/* page break always after element on pdf/print definition */
+
+div.pagebreak {
+    page-break-after: always;
+}
+
+
+/* no page break inside element on pdf/print definition */
+
+div.nopb {
+    page-break-inside: avoid !important;
+    margin: 4px 0 4px 0;
+}
+
+
+/* note blocks */
+
+div.note {
+    background: #FCF8E3 none repeat scroll 0% 0%;
+    color: #8A6D3B;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-bottom: 5px solid #DDD;
+    border-color: #FAEBCC;
+    page-break-inside: avoid;
+}
+
+div.note p {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+
+/* images, figures and captions */
+
+p img {
+    /* center all images */
+    display: block;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
+figure {
+    margin: 1.0em 0px;
+    padding: 10px 0;
+    text-align: center;
+    page-break-inside: avoid;
+    display: block;
+}
+
+figure img {
+    display: block;
+    margin: 0 auto;
+}
+
+figcaption {
+    clear: left;
+    margin: 1.0em 0 0 0;
+    text-align: center;
+    font-style: italic;
+    line-height: 1.5em;
+    font-size: 80%;
+    color: #666;
+    display: block;
+}
+
+.page .section p img {
+    margin-top: 10px;
+}
+
+
+/* ul, ol list margin fix */
+
+.page .section ol,
+.page .section ul {
+    margin-bottom: 10px;
+}
+
+
+/* blockquotes */
+
+.page .section blockquote {
+    margin: 0 0 0 5%;
+    font-style: italic;
+}
+
+
+/* PAGE SPECIFIC */
+
+
+/* set summary page to right side of the paper */
+
+.page .toc h1 {
+    page-break-before: right;
+}
+
+.page .section.toc {
+    page-break-inside: always;
+}
+
+/* table headers */
+
+div#README\.md table {
+    margin-top: 30px;
+    font-size: 95%;
+}
+
+div#README\.md table thead {
+    display: none;
+}
+
+
+
+/* CITATION AND IMAGES */
+
+
+/* math image styles */
+
+.page .section p img.svg,
+.page .section p img.png {
+    margin-top: 0px;
+    margin-bottom: -2px;
+}
+
+.page .section p img.math {
+    vertical-align: middle;
+    height: auto;
+    width: auto;
+    margin-top: -4px;
+    max-height: 15px;
+}
+
+.page .section p img.math.line1 {
+    margin-top: -7px;
+    max-height: 19px;
+}
+
+.page .section p img.math.line2 {
+    margin-top: -1px;
+    max-height: 30px;
+}
+
+
+/* credits page */
+
+.page .section ul.pictures {
+    margin-left: -30px;
+}
+
+.page .section ul.pictures li {
+    list-style: outside none none;
+}
+
+.page .section ul.pictures li a {
+    float: left;
+}
+
+.page .section ul.pictures li span {
+    display: block;
+    margin-left: 100px;
+}
+
+
+
+/* sub and super script */
+
+.page .section sub {
+    font-size: 80%;
+    margin-left: 1px;
+}
+
+
+/* citations and references */
+
+.page .section sup {
+    margin-left: -1px;
+    margin-right: 2px;
+    font-size: 80%;
+}
+
+.page .section sup:before {
+    content: " ";
+}
+
+.page .section ul.citations,
+.page .section ul.references {
+    margin-left: -30px;
+}
+
+
+.page .section ul.citations li:nth-child(1) {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #BBB;
+}
+
+.page .section ul.citations li,
+.page .section ul.references li {
+    list-style: outside none none;
+}
+
+.page .section ul.citations li {
+    font-size: 80%;
+}
+
+.page .section ul.citations li>span:nth-child(1),
+.page .section ul.references li>span:nth-child(1) {
+    display: block;
+    float: left;
+    text-align: left;
+    width: 70px
+}
+
+.page .section ul.citations li>span:nth-child(1) {
+    width: 50px
+}
+
+.page .section ul.references li div {
+    margin-left: 70px;
+}
+
+.page .section ul.citations li div {
+    margin-left: 50px;
+}
+
+.page .section a[href="#"],
+.page .section a[href="#"]:link,
+.page .section a[href="#"]:visited,
+.page .section a[href="#"]:hover,
+.page .section a[href="#"]:focus {
+    text-decoration: none;
+    color: inherit;
+    cursor: text;
+    font-style: italic;
+}
+
+
+/* self referential footnotes */
+
+.page .section div[type="selfref"] a[href="#"],
+.page .section div[type="selfref"] a[href="#"]:link,
+.page .section div[type="selfref"] a[href="#"]:visited,
+.page .section div[type="selfref"] a[href="#"]:hover,
+.page .section div[type="selfref"] a[href="#"]:focus {
+    font-style: normal;
+}
+
+.page .section div[type="selfref"] span:nth-child(1) {
+    display: none;
+}
+
+
+/* page break always after element on pdf/print definition */
+
+div.page-break {
+    page-break-inside: always;
+}
+
+div.page-break:before {
+    content: ' ';
+}
+
+
+/* no page break inside element on pdf/print definition */
+
+div.nopb {
+    page-break-inside: avoid;
+}
+
+/* justify text */
+p {
+    text-align: justify;
+}
+
+/* page header and footer */
+
+.pdf-footer,
+.pdf-header {
+    margin-top: 20px;
+    color: #aaa;
+}
+
+.pdf-header .header-left {
+    float: left;
+    margin-left: 2em;
+    margin-right: auto;
+}
+
+.pdf-header .header-right {
+    display: table;
+    margin-left: auto;
+    margin-right: 2em;
+}
+
+.pdf-footer .sub {
+    padding-top: 8px;
+    font-size: 70%;
+}
+
+.pdf-header .sub {
+    padding-top: 2px;
+    font-size: 70%;
+}
+
+.pdf-footer {
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.pdf-footer .footer-left {
+    float: left;
+    margin-left: 2em;
+    margin-right: auto;
+}
+
+.pdf-footer .footer-center {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pdf-footer .footer-right {
+    float: right;
+    margin-left: auto;
+    margin-right: 2em;
+}
+
+.pdf-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.pdf-header .header-pages-count {
+    float: right;
+    text-align: right;
+}
+
+.pdf-header .header-pages-count a,
+.pdf-header .header-pages-count a:visited,
+.pdf-header .header-pages-count a:active,
+.pdf-header .header-pages-count a:focus,
+.pdf-header .header-pages-count a:link {
+    text-decoration: none;
+    color: #aaa;
+    cursor: text;
+}

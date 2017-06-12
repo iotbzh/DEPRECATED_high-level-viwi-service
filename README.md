@@ -1,31 +1,23 @@
 # High level binding
 
-CAN binder, based upon ViWi definition.
+CAN binding, based upon ViWi definition.
 
 This binding is intended to act between the low-level binding and clients. It collects resources as defined in a json configuration file, and
 implements subscribe/unsubscribe/get verbs for the clients.
 
 # build
 ```bash
-git submodule init
-git submodule update
-mkdir build
-cd build
-cmake ..
-make
+mkdir build;cd build; cmake ..; make
 ```
-
-> ! WARNING don't forget to initialize submodule needed to build the project.
-
 # launching
 natively under linux you can launch afb-daemon with the low-level and high-level bindings with a command like:
 
 ```bash
-afb-daemon --rootdir=<path_to_low_binding>/CAN-binder/build/package --ldpaths=<path_to_low_binding>/CAN-binder/build/package/lib:<path_to_high_binding>/build/high-can-binding --port=1234 --tracereq=common --token=1 --verbose --verbose --verbose
+afb-daemon --rootdir=<path_to_low_binding>/CAN-binder/build/package --ldpaths=<path_to_low_binding>/CAN-binder/build/package/lib:<path_to_high_binding>/build/high-can-binding --port=1234 --tracereq=common --token=1 --verbose
 ```
 
 #json configuration file
-json configuration file (high.json) must be placed in the directory where you will launch afb-dameon
+json configuration file (high.json) must be placed in the directory where you launch afb-dameon
 The json configuration file consists in 2 sections:
 
 ## definitions section
@@ -101,12 +93,8 @@ For instance:
 }
 ```
 # Running and testing
-You can use afb-client-demo to test high level binding.
-For instance, once daemon has been launched with the 2 bindings:
-```bash
-afb-client-demo ws://localhost:1234/api?token=1
-```
-You can then use commands such as:
+You can use *afb-client-demo* to test high level binding.
+For instance, once daemon has been launched with the 2 bindings, you can use commands such as:
 ```bash
 high-can subscribe {"name":"/car/doors/","interval":10000}
 high-can unsubscribe {"name":"/car/doors/","interval":10000}
