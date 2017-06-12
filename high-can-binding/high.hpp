@@ -9,6 +9,7 @@
 #include <systemd/sd-event.h>
 extern "C"
 {
+    #define AFB_BINDING_VERSION 2
     #include <afb/afb-binding.h>
 };
 
@@ -43,7 +44,7 @@ public:
     void tick(sd_event_source *source, const long &now, void *interv);
     void startTimer(const int &t);
     ~High();
-    void parseConfigAndSubscribe(afb_service service);
+    void parseConfigAndSubscribe();
     static bool startsWith(const std::string &s, const std::string &val);
     static void callBackFromSubscribe(void *handle, int iserror, json_object *result);
 private:

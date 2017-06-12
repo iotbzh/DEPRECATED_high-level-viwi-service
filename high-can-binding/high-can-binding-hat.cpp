@@ -1,47 +1,35 @@
 #include "high-can-binding-hat.hpp"
 #include <cstddef>
 /// Interface between the daemon and the binding
-const struct afb_binding_interface *binder_interface;
-extern "C"
+
+static int init_service();
+
+static const struct afb_verb_v2 verbs[]=
 {
-    #include <afb/afb-service-itf.h>
-    struct afb_service srvitf;
-};
-static const struct afb_verb_desc_v1 verbs[]=
-{
-    { .name= "subscribe",	.session= AFB_SESSION_NONE, .callback= subscribe,	.info= "subscribe to notification of CAN bus messages." },
-    { .name= "unsubscribe",	.session= AFB_SESSION_NONE, .callback= unsubscribe,	.info= "unsubscribe a previous subscription." },
-    { .name= "get",	        .session= AFB_SESSION_NONE, .callback= get,     	.info= "high can get viwi request." },
+    { .verb= "subscribe",	.callback= subscribe,	.auth = NULL, .session = 0 },
+    { .verb= "unsubscribe",	.callback= unsubscribe,	.auth = NULL, .session = 0 },
+    { .verb= "get",	        .callback= get,	.auth = NULL, .session = 0 },
+    { .verb= NULL, .callback=NULL, .auth = NULL, .session = 0 }
 };
 
-static const struct afb_binding binding_desc {
-    AFB_BINDING_VERSION_1,
-    {
-        "High level CAN bus service",
-        "high-can",
-        verbs
-    }
+const struct afb_binding_v2 afbBindingV2 = {
+    .api = "high-can",
+    .specification = "",
+    .verbs = verbs,
+    .preinit = NULL,
+    .init = init_service,
+    .onevent = onEvent,
+    .noconcurrency = 1
 };
 
-const struct afb_binding *afbBindingV1Register (const struct afb_binding_interface *itf)
-{
-    binder_interface = itf;
-    NOTICE(binder_interface, "high level afbBindingV1Register");
-
-    return &binding_desc;
-}
 /// @brief Initialize the binding.
 ///
-/// @param[in] service Structure which represent the Application Framework Binder.
-///
 /// @return Exit code, zero if success.
-int afbBindingV1ServiceInit(struct afb_service service)
+int init_service()
 {
-    srvitf = service;
-    //NOTICE(binder_interface, "before afb_daemon_require_api");
-    //afb_daemon_require_api(binder_interface->daemon, "low-can", 1);
-    NOTICE(binder_interface, "high level binding is initializing");
-    initHigh(service);
-    NOTICE(binder_interface, "high level binding is initialized and running");
+    NOTICE("high level binding is initializing");
+    afb_daemon_require_api("low-can", 1);
+    initHigh();
+    NOTICE("high level binding is initialized and running");
     return 0;
 }

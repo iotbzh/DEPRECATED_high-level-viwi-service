@@ -48,9 +48,7 @@ High::High()
 /// @brief Reads the json configuration and generates accordingly the resources container. An UID is generated for each resource.
 ///        Makes necessary subscriptions to low-level, eventually with a frequency.
 ///
-/// @param[in] afb_service: the service to call for subscriptions.
-///
-void High::parseConfigAndSubscribe(struct afb_service service)
+void High::parseConfigAndSubscribe()
 {
     json_object *config = json_object_from_file("high.json");
     json_object *jvalue, *jarray1, *jarray2, *obj;
@@ -88,7 +86,7 @@ void High::parseConfigAndSubscribe(struct afb_service service)
             const std::string uri = name + id;
             jvalue = json_object_array_get_idx(jarray2, i);
             if(properties.find(name) == properties.end()) {
-                NOTICE(binder_interface, "Unable to find name %s in properties", name.c_str());
+                NOTICE("Unable to find name %s in properties", name.c_str());
                 continue;
             }
             const std::map<std::string, Property> props = properties[name];
@@ -101,7 +99,7 @@ void High::parseConfigAndSubscribe(struct afb_service service)
             json_object_object_foreach(jvalue, key, val) {
                 const std::string value = json_object_get_string(val);
                 if(props.find(key) == props.end()) {
-                    NOTICE(binder_interface, "Unable to find key %s in properties", value.c_str());
+                    NOTICE("Unable to find key %s in properties", value.c_str());
                     continue;
                 }
                 Property prop = props.at(key);
@@ -109,7 +107,7 @@ void High::parseConfigAndSubscribe(struct afb_service service)
                     const std::string canMessage = value.substr(2, value.size() - 1);
                     const std::vector<std::string> params = split(canMessage, ',');
                     if(params.size() != 2) {
-                        NOTICE(binder_interface, "Invalid CAN message definition %s", value.c_str());
+                        NOTICE("Invalid CAN message definition %s", value.c_str());
                         continue;
                     }
                     prop.lowMessageName = params.at(0);
@@ -129,7 +127,7 @@ void High::parseConfigAndSubscribe(struct afb_service service)
                     else if(prop.type == "int")
                         prop.value_int = 0;
                     else
-                        NOTICE(binder_interface, "ERROR 2! unexpected type in parseConfig %s %s", prop.description.c_str(), prop.type.c_str());
+                        NOTICE("ERROR 2! unexpected type in parseConfig %s %s", prop.description.c_str(), prop.type.c_str());
                 } else {
                     prop.value_string= std::string(value);
                 }
@@ -157,14 +155,14 @@ void High::parseConfigAndSubscribe(struct afb_service service)
         }
         json_object *dummy;
         const std::string js = json_object_get_string(jobj);
-        if(afb_service_call_sync(service, "low-can", "subscribe", jobj, &dummy) != 1)
-            NOTICE(binder_interface, "high-can subscription to low-can FAILED %s", js.c_str());
+        if(afb_service_call_sync("low-can", "subscribe", jobj, &dummy) != 1)
+            NOTICE("high-can subscription to low-can FAILED %s", js.c_str());
         else
-            NOTICE(binder_interface, "high-can subscribed to low-can %s", js.c_str());
+            NOTICE("high-can subscribed to low-can %s", js.c_str());
         json_object_put(dummy);
     }
     json_object_put(config);
-    NOTICE(binder_interface, "configuration loaded");
+    NOTICE("configuration loaded");
 }
 
 /// @brief Create and start a systemD timer. Only one timer is created per frequency.
@@ -177,7 +175,7 @@ void High::startTimer(const int &t)
         return;
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    sd_event_add_time(afb_daemon_get_event_loop(binder_interface->daemon), NULL, CLOCK_MONOTONIC, (ts.tv_sec + 1) * 1000000, 0, &ticked, new int(t));
+    sd_event_add_time(afb_daemon_get_event_loop(), NULL, CLOCK_MONOTONIC, (ts.tv_sec + 1) * 1000000, 0, &ticked, new int(t));
 }
 High::~High()
 {
@@ -186,9 +184,9 @@ High::~High()
 
 /// @brief callback called after subscription to low-level binding.
 ///
-void High::callBackFromSubscribe(void *handle, int iserror, struct json_object *result)
+void High::callBackFromSubscribe(void *handle, int iserror, json_object *result)
 {
-    NOTICE(binder_interface, "high level callBackFromSubscribe method called %s", json_object_get_string(result));
+    NOTICE("high level callBackFromSubscribe method called %s", json_object_get_string(result));
 }
 
 /// @brief Entry point for all timer events. Treats all requests linked to the specific timer frequency.
@@ -199,7 +197,7 @@ void High::callBackFromSubscribe(void *handle, int iserror, struct json_object *
 void High::tick(sd_event_source *source, const long &now, void *interv)
 {
     const int interval = *(int*)interv;
-    NOTICE(binder_interface, "tick! %d %ld", interval, now);
+    NOTICE("tick! %d %ld", interval, now);
     bool hasEvents = false;
     if(timedEvents.find(interval) != timedEvents.end()) {
         std::vector<TimedEvent> evts  = timedEvents[interval];
@@ -225,7 +223,7 @@ void High::tick(sd_event_source *source, const long &now, void *interv)
                 evts.erase(evts.begin() + i);
                 timedEvents[interval] = evts;
             }
-            //NOTICE(binder_interface, "%s event pushed to %d subscribers", e.eventName.c_str(), nbSubscribers);
+            //NOTICE("%s event pushed to %d subscribers", e.eventName.c_str(), nbSubscribers);
         }
         if(evts.size() > 0)
             hasEvents = true;
@@ -234,7 +232,7 @@ void High::tick(sd_event_source *source, const long &now, void *interv)
         sd_event_source_set_time(source, now + interval * 1000);
         sd_event_source_set_enabled(source, SD_EVENT_ON);
     } else {
-        //NOTICE(binder_interface, "timer removed %d", interval);
+        //NOTICE("timer removed %d", interval);
         delete (int*)interv;
         if(timers.find(interval) != timers.end()) {
             timers.erase(interval);
@@ -255,10 +253,10 @@ void High::treatMessage(json_object *message)
     json_object_object_get_ex(message, "value", &jvalue);
     const std::string messageName(json_object_get_string(nameJson));
     if(lowMessagesToObjects.find(messageName) == lowMessagesToObjects.end()) {
-        NOTICE(binder_interface, "message not linked to any object %s", json_object_get_string(message));
+        NOTICE("message not linked to any object %s", json_object_get_string(message));
         return;
     }
-//    NOTICE(binder_interface, "message received %s", json_object_get_string(message));
+//    NOTICE("message received %s", json_object_get_string(message));
     const std::set<std::string> objects = lowMessagesToObjects.at(messageName);
     std::vector<std::string> candidateMessages;
     for(const std::string &uri : objects) {
@@ -283,7 +281,7 @@ void High::treatMessage(json_object *message)
             else if(property.type == "int")
                 property.value_int = json_object_get_int(jvalue);
             else
-                NOTICE(binder_interface, "ERROR 3! unexpected type %s %s", property.description.c_str(), property.type.c_str());
+                NOTICE("ERROR 3! unexpected type %s %s", property.description.c_str(), property.type.c_str());
             properties[foundProperty] = property;
             registeredObjects[uri] = properties;
         }
@@ -344,7 +342,7 @@ json_object *High::generateJson(const std::string &messageObject, std::vector<st
             const int value = p.second.value_int;
             json_object_object_add(json, p.first.c_str(), json_object_new_int(value));
         } else {
-            NOTICE(binder_interface, "ERROR 1! unexpected type %s %s %s", p.first.c_str(), p.second.description.c_str(), p.second.type.c_str());
+            NOTICE("ERROR 1! unexpected type %s %s %s", p.first.c_str(), p.second.description.c_str(), p.second.type.c_str());
         }
     }
     return json;
@@ -388,7 +386,7 @@ bool High::subscribe(afb_req request)
                 if(events.find(message) != events.end()) {
                     event = events.at(message);
                 } else {
-                    event = afb_daemon_make_event(binder_interface->daemon, p.first.c_str());
+                    event = afb_daemon_make_event(p.first.c_str());
                     events[message] = event;
                 }
                 if (afb_event_is_valid(event) && afb_req_subscribe(request, event) == 0) {
@@ -411,10 +409,10 @@ bool High::subscribe(afb_req request)
                     char ext[20];
                     sprintf(ext, "_%d", ms);
                     std::string messageName = message + std::string(ext);
-                    //NOTICE(binder_interface, "subscribe with interval %s", messageName.c_str());
-                    afbEvent = afb_daemon_make_event(binder_interface->daemon, messageName.c_str());
+                    //NOTICE("subscribe with interval %s", messageName.c_str());
+                    afbEvent = afb_daemon_make_event(messageName.c_str());
                     if (!afb_event_is_valid(afbEvent)) {
-                        NOTICE(binder_interface, "unable to create event");
+                        NOTICE("unable to create event");
                         return false;
                     }
                     TimedEvent e;

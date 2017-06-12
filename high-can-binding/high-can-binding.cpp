@@ -22,12 +22,12 @@
 High high;
 
 /// @brief callback for receiving message from low binding. Treatment itself is made in High class.
-extern void afbBindingV1ServiceEvent(const char *event, struct json_object *object)
+void onEvent(const char *event, json_object *object)
 {
     high.treatMessage(object);
 }
 /// @brief entry point for client subscription request. Treatment itself is made in High class.
-void subscribe(struct afb_req request)
+void subscribe(afb_req request)
 {
     if(high.subscribe(request))
         afb_req_success(request, NULL, NULL);
@@ -36,7 +36,7 @@ void subscribe(struct afb_req request)
 }
 
 /// @brief entry point for client un-subscription request. Treatment itself is made in High class.
-void unsubscribe(struct afb_req request)
+void unsubscribe(afb_req request)
 {
     if(high.unsubscribe(request))
         afb_req_success(request, NULL, NULL);
@@ -45,7 +45,7 @@ void unsubscribe(struct afb_req request)
 }
 
 /// @brief entry point for get requests. Treatment itself is made in High class.
-void get(struct afb_req request)
+void get(afb_req request)
 {
     json_object *jobj;
     if(high.get(request, &jobj)) {
@@ -66,9 +66,9 @@ int ticked(sd_event_source *source, long unsigned int t, void* data)
 /// @brief Initialize the binding.
 ///
 /// @param[in] service Structure which represent the Application Framework Binder.
-void initHigh(struct afb_service service)
+void initHigh()
 {
-    high.parseConfigAndSubscribe(service);
+    high.parseConfigAndSubscribe();
 }
 
 

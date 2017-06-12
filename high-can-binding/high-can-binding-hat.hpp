@@ -3,15 +3,13 @@
 #include <systemd/sd-event.h>
 extern "C"
 {
-    #define AFB_BINDING_VERSION 1
+    #define AFB_BINDING_VERSION 2
     #include <afb/afb-binding.h>
 };
 
-extern "C" struct afb_binding_interface;
-extern "C" struct afb_service srvitf;
-extern const struct afb_binding_interface *binder_interface;
-    void subscribe(struct afb_req request);
-    void unsubscribe(struct afb_req request);
-    void get(struct afb_req request);
-    void initHigh(afb_service service);
+    void onEvent(const char *event, struct json_object *object);
+    void subscribe(afb_req request);
+    void unsubscribe(afb_req request);
+    void get(afb_req request);
+    void initHigh();
     int ticked(sd_event_source *source, unsigned long t, void *data);
