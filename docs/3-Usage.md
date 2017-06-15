@@ -141,11 +141,11 @@ ON-REPLY 1:high-can/get: {"response":{"\/car\/demoboard\/2159e2-5b638a-39e242-7a
 ```
 
 As you can see for the moment all values are 0, because we didn't inject any CAN data in the binder. To do this, you can use **canplayer** to feed the bindings with some data.
+You can find an example of data in high level binding, "samples" directory.
 
 For instance, on a third terminal:
 
 ```bash
-$ canplayer -I highwaycomplete
+$ canplayer -I candata
 ```
-
 
