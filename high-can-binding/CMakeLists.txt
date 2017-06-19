@@ -25,10 +25,10 @@ PROJECT_TARGET_ADD(high-can)
 
 	# Binder exposes a unique public entry point
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
-	PREFIX "afs-"
+	PREFIX "afb-"
         LABELS "BINDING"
 	LINK_FLAGS ${BINDINGS_LINK_FLAG}
-		OUTPUT_NAME ${TARGET_NAME}
+	OUTPUT_NAME ${TARGET_NAME}
 	)
 
 	# Library dependencies (include updates automatically)
