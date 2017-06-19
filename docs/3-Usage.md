@@ -1,8 +1,12 @@
+
+
 # Usage
 
-## JSon configuration file
+## JSON configuration file
 
 This file must be named *high.json*, and must accessible from afb-daemon.
+
+
 The json configuration file consists in 2 sections:
 
 ### Definitions section
@@ -94,9 +98,18 @@ For instance:
 
 ### Launch the binder together with the two bindings
 
+The Json high level configuration file *high.json* must be placed in the directory where you launch afb-daemon.
+
+```bash
+$ cp $WD/high-level-viwi-service/high.json $WD
+ cd $WD
+```
+
+Then you can natively under linux you can launch afb-daemon with the low-level and high-level bindings with a command like:
+
 ```bash
 $ cd $WD
-$ afb-daemon --rootdir=$WD/low-level-can-service/CAN-binder/build/package --ldpaths=$WD/low-level-can-service/CAN-binder/build/package/lib:$WD/high-level-viwi-service/build/high-can-binding --port=1234 --tracereq=common --token=1 --verbose
+$ afb-daemon --rootdir=$WD/low-level-can-service/CAN-binder/build/package --binding=$WD/low-level-can-service/CAN-binder/build/package/lib/afb-low-can.so --binding=$WD/high-level-viwi-service/build/package/lib/afb-high-can.so --port=1234 --tracereq=common --token=1 --verbose
 ```
 
 ### Use afb-client-demo to test high level binding

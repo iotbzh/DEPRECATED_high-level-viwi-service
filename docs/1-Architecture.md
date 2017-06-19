@@ -1,6 +1,8 @@
 # AGL VIWI HIGH-CAN binding architecture
 
-This binding is intended to act between low-level binding(s) and clients. It builds ViWi resources as defined in a json configuration file, and implements subscribe/unsubscribe/get verbs for the clients. Each ViWi resource can be composed of several elements, for which subscriptions will be made to the low-level binding with configurable frequencies or filters.
+This binding is intended to act between low-level binding(s) and clients. It builds ViWi resources as defined in a json configuration file. It implements subscribe/unsubscribe/get verbs for the clients accordingly with protocol specification.
+
+Each ViWi resource can be composed of several elements, for which subscriptions will be made to the low-level binding with configurable frequencies or filters.
 
 ![ViWi High Level binding architecture](images/high-level-arch.png)
 
@@ -12,7 +14,7 @@ ViWi (Volkswagen Infotainment Web Interface) protocol defines a serie of objects
 
 Each object is assigned with a unique URI.
 
-The depth of the URI tree is limited to 3, i.e. /service/resource>/element/, for instance **/car/doors/3901a278-ba17-44d6-9aef-f7ca67c04840**.
+The depth of the URI tree is limited to 3, i.e. _/service/resource>/element/_, for instance **/car/doors/3901a278-ba17-44d6-9aef-f7ca67c04840**.
 
 To retrieve the list of elements for a given resource, one can use the get command, for instance **get /car/doors/**.
 
