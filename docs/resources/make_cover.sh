@@ -1,10 +1,10 @@
 #!/bin/bash
 
-cat cover.svg | sed -e 's/{title}/Low Level CAN binding/' \
+cat cover.svg | sed -e 's/{title}/High Level Viwi CAN binding/' \
     -e 's/font-size:87.5px/font-size:50px/g' \
     -e 's/{subtitle}//g' \
-    -e 's/{version}/Version 1.0/g' \
-    -e 's/{date}/March 2017/g' \
+    -e 's/{version}/Version 4.0/g' \
+    -e 's/{date}/June 2017/g' \
     > /tmp/cover.svg
 
 # use  imagemagick convert tool  (cover size must be 1800x2360)

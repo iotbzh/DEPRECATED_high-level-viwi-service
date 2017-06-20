@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Low CAN binding must be installed. Prerequisites are the same.
+Low level CAN service (>=4.0) must be installed. Prerequisites are the same.
 
 ```bash
 $ git clone --recursive https://gerrit.automotivelinux.org/gerrit/apps/low-level-can-service
