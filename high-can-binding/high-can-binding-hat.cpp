@@ -27,9 +27,9 @@ const struct afb_binding_v2 afbBindingV2 = {
 /// @return Exit code, zero if success.
 int init_service()
 {
-    NOTICE("high level binding is initializing");
+    AFB_NOTICE("high level binding is initializing");
     afb_daemon_require_api("low-can", 1);
     initHigh();
-    NOTICE("high level binding is initialized and running");
+    AFB_NOTICE("high level binding is initialized and running");
     return 0;
 }
