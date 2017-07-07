@@ -209,11 +209,10 @@ void High::tick(sd_event_source *source, const long &now, void *interv)
                     jsons[pp.first] = generateJson(pp.first);
                 }
             }
-            json_object *j;
+            json_object *j = json_object_new_object();
             if(jsons.size() == 1) {
                 j = jsons[0];
             } else if(jsons.size() > 1) {
-                j = json_object_new_object();
                 for(const auto &pp : jsons)
                     json_object_object_add(j, pp.first.c_str(), pp.second);
             }
@@ -296,11 +295,10 @@ void High::treatMessage(json_object *message)
                         jsons[pp.first] = generateJson(pp.first);
                     }
                 }
-                json_object *j;
+                json_object *j = json_object_new_object();
                 if(jsons.size() == 1) {
                     j = jsons[0];
                 } else if(jsons.size() > 1) {
-                    j = json_object_new_object();
                     for(const auto &pp : jsons)
                         json_object_object_add(j, pp.first.c_str(), pp.second);
                 }
