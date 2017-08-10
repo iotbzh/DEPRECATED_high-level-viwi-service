@@ -6,6 +6,7 @@
 
 This file must be named *high.json*, and must accessible from afb-daemon.
 
+> **NOTE** A sample is available at the root of the git repository.
 
 The json configuration file consists in 2 sections:
 
