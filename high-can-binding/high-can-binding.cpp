@@ -57,7 +57,7 @@ void get(afb_req request)
 
 /// @brief entry point for systemD timers. Treatment itself is made in High class.
 /// @param[in] source: systemD timer, t: time of tick, data: interval (ms).
-int ticked(sd_event_source *source, long unsigned int t, void* data)
+int ticked(sd_event_source *source, uint64_t t, void* data)
 {
     high.tick(source, t, data);
     return 0;

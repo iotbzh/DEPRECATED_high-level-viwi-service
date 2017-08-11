@@ -12,4 +12,4 @@ extern "C"
     void unsubscribe(afb_req request);
     void get(afb_req request);
     void initHigh();
-    int ticked(sd_event_source *source, unsigned long t, void *data);
+    int ticked(sd_event_source *source, uint64_t t, void *data);
