@@ -18,7 +18,7 @@
 
 # Project Info
 # ------------------
-set(PROJECT_NAME high-can-service)
+set(PROJECT_NAME high-viwi-service)
 set(PROJECT_VERSION "4.0")
 set(PROJECT_PRETTY_NAME "High level CAN service")
 set(PROJECT_DESCRIPTION "Expose CAN Low Level APIs through AGL Framework")
@@ -110,7 +110,7 @@ set(WIDGET_TYPE application/vnd.agl.service)
 # This is the file that will be executed, loaded,
 # at launch time by the application framework.
 #
-set(WIDGET_ENTRY_POINT "lib/afb-high-can.so")
+set(WIDGET_ENTRY_POINT "lib/afb-high-viwi.so")
 
 # Optional dependencies order
 # ---------------------------

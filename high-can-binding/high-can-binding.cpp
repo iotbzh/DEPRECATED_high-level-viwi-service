@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-#include "high-can-binding-hat.hpp"
+#include "high-viwi-binding-hat.hpp"
 #include <json-c/json.h>
 #include "high.hpp"
 High high;

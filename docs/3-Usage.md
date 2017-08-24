@@ -110,7 +110,7 @@ Then you can natively under linux you can launch afb-daemon with the low-level a
 
 ```bash
 $ cd $WD
-$ afb-daemon --rootdir=$WD/low-level-can-service/CAN-binder/build/package --binding=$WD/low-level-can-service/CAN-binder/build/package/lib/afb-low-can.so --binding=$WD/high-level-viwi-service/build/package/lib/afb-high-can.so --port=1234 --tracereq=common --token=1 --verbose
+$ afb-daemon --rootdir=$WD/low-level-can-service/CAN-binder/build/package --binding=$WD/low-level-can-service/CAN-binder/build/package/lib/afb-low-can.so --binding=$WD/high-level-viwi-service/build/package/lib/afb-high-viwi.so --port=1234 --tracereq=common --token=1 --verbose
 ```
 
 ### Use afb-client-demo to test high level binding
@@ -134,24 +134,24 @@ To use the _**AFB Websocket CLI**_ tool, a command line will be like the followi
 
 Where:
 
-* API : _**high-can**_.
+* API : _**high-viwi**_.
 * Verb : _**get**_, _**subscribe**_ or _**unsubscribe**_
 * Arguments : _**{ "name": "/car/doors/" }**_
 
 You can therefore use commands such as:
 
 ```
-high-can subscribe {"name":"/car/doors/","interval":10000}
-high-can unsubscribe {"name":"/car/doors/","interval":10000}
-high-can get {"name":"/car/demoboard/"}
-high-can get {"name":"/car/demoboard/","fields":["fuelLevel","engineLoad"]}
+high-viwi subscribe {"name":"/car/doors/","interval":10000}
+high-viwi unsubscribe {"name":"/car/doors/","interval":10000}
+high-viwi get {"name":"/car/demoboard/"}
+high-viwi get {"name":"/car/demoboard/","fields":["fuelLevel","engineLoad"]}
 ```
 
 For instance the output of the third command should be:
 
 ```
-high-can get {"name":"/car/demoboard/"}
-ON-REPLY 1:high-can/get: {"response":{"\/car\/demoboard\/2159e2-5b638a-39e242-7a2f5":{"id":"2159e2-5b638a-39e242-7a2f5","name":"vehicleSpeed","speed":0.000000,"unit":"km\/h","uri":"\/car\/demoboard\/2159e2-5b638a-39e242-7a2f5"},"\/car\/demoboard\/22ad2c-5a3c2b-50fabb-324c82":{"id":"22ad2c-5a3c2b-50fabb-324c82","level":0.000000,"name":"fuelLevel","unit":"litre","uri":"\/car\/demoboard\/22ad2c-5a3c2b-50fabb-324c82"},"\/car\/demoboard\/3a3ab9-2bd52c-11d30-689acf":{"id":"3a3ab9-2bd52c-11d30-689acf","name":"engineSpeed","rpm":0.000000,"unit":"rpm","uri":"\/car\/demoboard\/3a3ab9-2bd52c-11d30-689acf"},"\/car\/demoboard\/5ae808-8093cb-99716-30a605":{"id":"5ae808-8093cb-99716-30a605","load":0.000000,"name":"engineLoad","unit":"Nm","uri":"\/car\/demoboard\/5ae808-8093cb-99716-30a605"}},"jtype":"afb-reply","request":{"status":"success","uuid":"44ce03f9-a7ca-49e1-a62a-40c74db0caa0"}}
+high-viwi get {"name":"/car/demoboard/"}
+ON-REPLY 1:high-viwi/get: {"response":{"\/car\/demoboard\/2159e2-5b638a-39e242-7a2f5":{"id":"2159e2-5b638a-39e242-7a2f5","name":"vehicleSpeed","speed":0.000000,"unit":"km\/h","uri":"\/car\/demoboard\/2159e2-5b638a-39e242-7a2f5"},"\/car\/demoboard\/22ad2c-5a3c2b-50fabb-324c82":{"id":"22ad2c-5a3c2b-50fabb-324c82","level":0.000000,"name":"fuelLevel","unit":"litre","uri":"\/car\/demoboard\/22ad2c-5a3c2b-50fabb-324c82"},"\/car\/demoboard\/3a3ab9-2bd52c-11d30-689acf":{"id":"3a3ab9-2bd52c-11d30-689acf","name":"engineSpeed","rpm":0.000000,"unit":"rpm","uri":"\/car\/demoboard\/3a3ab9-2bd52c-11d30-689acf"},"\/car\/demoboard\/5ae808-8093cb-99716-30a605":{"id":"5ae808-8093cb-99716-30a605","load":0.000000,"name":"engineLoad","unit":"Nm","uri":"\/car\/demoboard\/5ae808-8093cb-99716-30a605"}},"jtype":"afb-reply","request":{"status":"success","uuid":"44ce03f9-a7ca-49e1-a62a-40c74db0caa0"}}
 ```
 
 As you can see for the moment all values are 0, because we didn't inject any CAN data in the binder. To do this, you can use **canplayer** to feed the bindings with some data.

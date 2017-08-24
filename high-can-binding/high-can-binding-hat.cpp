@@ -1,4 +1,4 @@
-#include "high-can-binding-hat.hpp"
+#include "high-viwi-binding-hat.hpp"
 #include <cstddef>
 /// Interface between the daemon and the binding
 
@@ -13,7 +13,7 @@ static const struct afb_verb_v2 verbs[]=
 };
 
 const struct afb_binding_v2 afbBindingV2 = {
-    .api = "high-can",
+    .api = "high-viwi",
     .specification = "",
     .info = "High CAN ViWi API connected to low-can AGL service",
     .verbs = verbs,

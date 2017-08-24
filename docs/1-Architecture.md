@@ -1,4 +1,4 @@
-# AGL VIWI HIGH-CAN binding architecture
+# AGL VIWI HIGH-VIWI binding architecture
 
 This binding is intended to act between low-level binding(s) and clients. It builds ViWi resources as defined in a json configuration file. It implements subscribe/unsubscribe/get verbs for the clients accordingly with protocol specification.
 

@@ -13,7 +13,7 @@ mkdir build;cd build; cmake ..; make
 natively under linux you can launch afb-daemon with the low-level and high-level bindings with a command like:
 
 ```bash
-afb-daemon --rootdir=<path_to_low_binding>/CAN-binder/build/package --ldpaths=<path_to_low_binding>/CAN-binder/build/package/lib:<path_to_high_binding>/build/high-can-binding --port=1234 --tracereq=common --token=1 --verbose
+afb-daemon --rootdir=<path_to_low_binding>/CAN-binder/build/package --ldpaths=<path_to_low_binding>/CAN-binder/build/package/lib:<path_to_high_binding>/build/high-viwi-binding --port=1234 --tracereq=common --token=1 --verbose
 ```
 
 #json configuration file
@@ -96,10 +96,10 @@ For instance:
 You can use *afb-client-demo* to test high level binding.
 For instance, once daemon has been launched with the 2 bindings, you can use commands such as:
 ```bash
-high-can subscribe {"name":"/car/doors/","interval":10000}
-high-can unsubscribe {"name":"/car/doors/","interval":10000}
-high-can get {"name":"/car/demoboard/"}
-high-can get {"name":"/car/demoboard/","fields":["fuelLevel","engineLoad"]}
+high-viwi subscribe {"name":"/car/doors/","interval":10000}
+high-viwi unsubscribe {"name":"/car/doors/","interval":10000}
+high-viwi get {"name":"/car/demoboard/"}
+high-viwi get {"name":"/car/demoboard/","fields":["fuelLevel","engineLoad"]}
 ```
 You can also inject some data in CAN bus using canplayer (example of data can be find in low-level binding example directory)
 ```bash
