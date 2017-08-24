@@ -1,0 +1,69 @@
+{
+    "$schema": "ToBeDone",
+    "metadata": {
+        "label": "ViWi-standalone-control",
+        "info": "High Level ViWi Standalone Controller Config",
+        "name": "afb-viwi-controller",
+        "version": "1.0"
+    },
+    "onload": [{
+            "label": "onload-default",
+            "info": "onload initialisation config",
+            "require": ["high-viwi"],
+            "actions":
+                    {
+                        "label": "control-init",
+                        "lua": "_Sample_Controller_Init",
+                        "args": {
+                            "xxxx": 1234,
+                            "yyyy": "Bien le bonjours à vous",
+                            "zzzz": "simple-evt"
+                        }
+                    }
+        }],
+    "controls":
+            [
+                {
+                    "label": "Button-Happy",
+                    "actions": {
+                        "label": "Action Happy",
+                        "lua": "_Button_Happy",
+                        "args": {
+                            "button": 5678
+                        }
+                    }
+                }, {
+                    "label": "Button-UnHappy",
+                    "actions": {
+                        "label": "Action Unhappy",
+                        "lua": "_Button_UnHappy",
+                        "args": {
+                            "button": "abcd"
+                        }
+                    }
+                }
+            ],
+    "events":
+            [
+                {
+                    "label": "Event1",
+                    "actions": {
+                        "label": "Action Event 1",
+                        "lua": "_Event_Received",
+                        "args": {
+                            "evtname": "xxx"
+                        }
+                    }
+                },
+                {
+                    "label": "Event2",
+                    "actions": {
+                        "label": "Action Event 2",
+                        "lua": "_Event_Received",
+                        "args": {
+                            "evtname": "yyy"
+                        }
+                    }
+                }
+            ]
+}
