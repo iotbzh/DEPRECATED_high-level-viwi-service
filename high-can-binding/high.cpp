@@ -503,7 +503,7 @@ bool High::get(afb_req request, json_object **json)
     std::vector<std::string> fields;
     if(hasFields) {
         int arraylen = json_object_array_length(fieldsJson);
-        json_object * jvalue;
+        json_object* jvalue;
         for(int i = 0; i < arraylen; ++i) {
           jvalue = json_object_array_get_idx(fieldsJson, i);
           fields.push_back(json_object_get_string(jvalue));
