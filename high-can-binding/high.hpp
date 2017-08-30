@@ -31,6 +31,7 @@ struct Property {
     std::string value_string;
     double value_double;
     int value_int;
+    Property() { interval = 0; value_bool = false; value_double = 0.0; value_int = 0;}
 };
 
 class High
@@ -54,5 +55,5 @@ private:
     std::map<std::string, std::set<std::string>> lowMessagesToObjects;
     std::set<int> timers;
     std::string generateId() const;
-    json_object *generateJson(const std::string &messageObject, std::vector<std::__cxx11::string> *fields = NULL);
+    json_object *generateJson(const std::string &messageObject, std::vector<std::string> *fields = nullptr);
 };
