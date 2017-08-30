@@ -21,12 +21,12 @@
 PROJECT_TARGET_ADD(high-can)
 
 	# Define project Targets
-        add_library(${TARGET_NAME} MODULE ${TARGET_NAME}-binding.cpp high-can-binding-hat.cpp high.cpp)
+	add_library(${TARGET_NAME} MODULE ${TARGET_NAME}-binding.cpp high-can-binding-hat.cpp high.cpp)
 
 	# Binder exposes a unique public entry point
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
 	PREFIX "afb-"
-        LABELS "BINDING"
+	LABELS "BINDING"
 	LINK_FLAGS ${BINDINGS_LINK_FLAG}
 	OUTPUT_NAME ${TARGET_NAME}
 	)
@@ -35,9 +35,3 @@ PROJECT_TARGET_ADD(high-can)
 	TARGET_LINK_LIBRARIES(${TARGET_NAME}
 		${link_libraries}
 	)
-
-	# installation directory
-	INSTALL(TARGETS ${TARGET_NAME}
-		LIBRARY DESTINATION ${BINDINGS_INSTALL_DIR})
-
-        #build_widget("BINDING")
