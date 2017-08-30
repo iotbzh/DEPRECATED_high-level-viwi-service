@@ -1,0 +1,208 @@
+{
+	"definitions": [{
+		"name": "/car/geoloc/",
+		"properties": {
+			"id": {
+				"type": "string",
+				"description": "identifier"
+			},
+			"uri": {
+				"type": "string",
+				"description": "object uri"
+			},
+			"name": {
+				"type": "string",
+				"description": "name"
+			},
+			"unit": {
+				"type": "string",
+				"description": "units"
+			},
+			"latitude": {
+				"type": "double",
+				"description":  "expresses the latitude of the current position. Range [-90:+90]. Example: 48.053250",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"longitude": {
+				"type": "double",
+				"description": "expresses the longitude of the current position. Range [-180:+180]. Example: 8.324500",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"altitude": {
+				"type": "double",
+				"description": "expresses the altitude above the sea level of the current position in meters",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"heading": {
+				"type": "double",
+				"description": "expresses the course angle in degree. Range [0:360]. 0 = north, 90 = east, 180 = south, 270 = west",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"speed": {
+				"type": "double",
+				"description": "expresses speed measured in m/s. A negative value indicates that the vehicle is moving backwards",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"climb": {
+				"type": "double",
+				"description": "that expresses the road gradient in degrees",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"roll_rate": {
+				"type": "double",
+				"description": "rotation rate around the x-axis in degrees/s. range [-100:+100]",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"pitch_rate": {
+				"type": "double",
+				"description": "rotation rate around the y-axis in degrees/s. range [-100:+100]",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"yaw_rate": {
+				"type": "double",
+				"description": "rotation rate around the z-axis in degrees/s. range [-100:+100]",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"pdop": {
+				"type": "double",
+				"description": "that represents the positional (3d) dilution of precision",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"hdop": {
+				"type": "double",
+				"description": "that represents the horizontal (2d) dilution of precision",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"vdop": {
+				"type": "double",
+				"description": "that represents vertical (altitude) dilution of precision",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"used_satellites": {
+				"type": "uint8",
+				"description": "that represents the number of used satellites",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"tracked_satellites": {
+				"type": "uint8",
+				"description": "that represents the number of tracked satellites ",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"visible_satellites": {
+				"type": "uint8",
+				"description": "that represents the number of visible satellites",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"sigma_hposition": {
+				"type": "double",
+				"description": "that represents the standard deviation for the horizontal position in m",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"sigma_altitude": {
+				"type": "double",
+				"description": "that represents the standard deviation for altitude in m",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"sigma_heading": {
+				"type": "double",
+				"description": "that represents the standard deviation for altitude in degrees",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"sigma_speed": {
+				"type": "double",
+				"description": "that represents the standard error estimate of the speed in m/s</line>",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"sigma_climb": {
+				"type": "double",
+				"description": "that represents the standard error estimate of the climb in degrees</line>",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"gnss_fix_status": {
+				"type": "uint16",
+				"description": "that represents an enum(no_fix(0x01),time_fix(0x01),2d_fix(0x02),3d_fix(0x03), ... )",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"dr_status": {
+				"type": "boolean",
+				"description": "where true means that a dead-reckoning algorithm has been used to calculate the current position",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"reliabilty_index": {
+				"type": "uint8_t",
+				"description": "percentage that indicates the position feedback reliability. It can assume values from 0 to 100. Higher values indicate higher reliability.",
+				"afb-service": "AFB service from where comes the signals values"
+			}
+		}
+	}, {
+		"name": "/car/doors/",
+		"properties": {
+			"id": {
+				"type": "string",
+				"description": "identifier"
+			},
+			"uri": {
+				"type": "string",
+				"description": "object uri"
+			},
+			"name": {
+				"type": "string",
+				"description": "name"
+			},
+			"position": {
+				"type": "string",
+				"description": "the vehicle door position"
+			},
+			"isDoorOpen": {
+				"type": "boolean",
+				"description": "the door state; set to 'true' if the door is open",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"isWindowOpen": {
+				"type": "boolean",
+				"description": "the window state of this door; set to 'true' if window is open; set to JSON-undefined if window state is unknown or invalid",
+				"afb-service": "AFB service from where comes the signals values"
+			}
+		}
+	}, {
+		"name": "/car/demoboard/",
+		"properties": {
+			"id": {
+				"type": "string",
+				"description": "identifier"
+			},
+			"uri": {
+				"type": "string",
+				"description": "object uri"
+			},
+			"name": {
+				"type": "string",
+				"description": "name"
+			},
+			"unit": {
+				"type": "string",
+				"description": "units"
+			},
+			"speed": {
+				"type": "double",
+				"description": "vehicle centerpoint speed as shown by the instrument cluster",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"rpm": {
+				"type": "double",
+				"description": "engine rotations per minute",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"level": {
+				"type": "double",
+				"description": "level of tankage",
+				"afb-service": "AFB service from where comes the signals values"
+			},
+			"load": {
+				"type": "double",
+				"description": "engine load",
+				"afb-service": "AFB service from where comes the signals values"
+			}
+		}
+	}]
+}
