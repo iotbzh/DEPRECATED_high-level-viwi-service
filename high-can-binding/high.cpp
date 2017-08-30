@@ -48,8 +48,34 @@ High::High()
 /// @brief Reads the json configuration and generates accordingly the resources container. An UID is generated for each resource.
 ///        Makes necessary subscriptions to low-level, eventually with a frequency.
 ///
-void High::parseConfigAndSubscribe()
+/// @param[in] confd - path to configuration directory which holds the binding configuration to load
+///
+void High::parseConfigAndSubscribe(const std::string* confd)
 {
+    char *filename;
+    char*fullpath;
+    std::vector<std::string> conf_files_path;
+    struct json_object* conf_filesJ = ScanForConfig(confd, CTL_SCAN_FLAT, "viwi", "json");
+    if (!conf_filesJ || json_object_array_length(conf_filesJ) == 0)
+    {
+        AFB_ERROR("No JSON config files found in %s", confd);
+        return;
+    }
+
+    for(int i=0; i < json_object_array_length(conf_filesJ); i++)
+    {
+        json_object *entryJ=json_object_array_get_idx(conf_filesJ, i);
+
+        err= wrap_json_unpack (entryJ, "{s:s, s:s !}", "fullpath",  &fullpath,"filename", &filename);
+        if (err) {
+            AFB_ERROR ("OOOPs invalid config file path = %s", json_object_get_string(entryJ));
+            return;
+        }
+        std::string filepath = fullpath;
+        filepath += filename;
+        conf_files_path.push_back(filepath);
+    }
+
     json_object *config = json_object_from_file("high.json");
     json_object *jvalue, *jarray1, *jarray2, *obj;
     std::map<std::string, std::map<std::string, Property>> properties;

@@ -8,6 +8,7 @@ static const struct afb_verb_v2 verbs[]=
 {
     { .verb= "subscribe",	.callback= subscribe,	.auth = NULL, .info = "subscribe to an ViWi object", .session = 0 },
     { .verb= "unsubscribe",	.callback= unsubscribe,	.auth = NULL, .info = "unsubscribe to a ViWi object", .session = 0 },
+    { .verb= "load",	.callback= load,	.auth = NULL, .info = "Load Viwi service Configuration", .session = 0 },
     { .verb= "get",	        .callback= get,	.auth = NULL, .info = "Get informations about a resource or element", .session = 0 },
     { .verb= NULL, .callback=NULL, .auth = NULL, .info = NULL, .session = 0 }
 };

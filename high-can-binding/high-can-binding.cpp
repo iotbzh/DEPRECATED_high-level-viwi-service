@@ -44,11 +44,22 @@ void unsubscribe(afb_req request)
         afb_req_fail(request, "error", NULL);
 }
 
+/// @brief verb that loads JSON configuration (old high.json file now)
+void load(afb_req request)
+{
+    json_object* args = afb_req_json(request);
+    const char* confd;
+
+    wrap_json_unpack(args, "{s:s}", "path", &confd);
+    high.parseConfigAndSubscribe(confd);
+}
+
 /// @brief entry point for get requests. Treatment itself is made in High class.
 void get(afb_req request)
 {
     json_object *jobj;
-    if(high.get(request, &jobj)) {
+    if(high.get(request, &jobj))
+    {
         afb_req_success(request, jobj, NULL);
     } else {
         afb_req_fail(request, "error", NULL);
@@ -68,7 +79,6 @@ int ticked(sd_event_source *source, uint64_t t, void* data)
 /// @param[in] service Structure which represent the Application Framework Binder.
 void initHigh()
 {
-    high.parseConfigAndSubscribe();
 }
 
 
