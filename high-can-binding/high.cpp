@@ -26,15 +26,18 @@ high-can unsubscribe {"name":"/car/doors/","interval":5000}
 /// @return std::vector<std::string> : a vector containing each individual string after the split.
 using namespace std;
 template<typename Out>
-void split(const std::string &s, char delim, Out result) {
+void split(const std::string &s, char delim, Out result)
+{
     std::stringstream ss;
     ss.str(s);
     std::string item;
-    while (std::getline(ss, item, delim)) {
+    while (std::getline(ss, item, delim))
+    {
         *(result++) = item;
     }
 }
-std::vector<std::string> split(const std::string &s, char delim) {
+std::vector<std::string> split(const std::string &s, char delim)
+{
     std::vector<std::string> elems;
     split(s, delim, std::back_inserter(elems));
     return elems;
@@ -82,13 +85,15 @@ void High::parseConfigAndSubscribe(const std::string* confd)
 
     json_object_object_get_ex(config, "definitions", &jarray1);
     int arraylen1 = json_object_array_length(jarray1);
-    for(int n = 0; n < arraylen1; ++n) {
+    for(int n = 0; n < arraylen1; ++n)
+    {
         obj = json_object_array_get_idx(jarray1, n);
         json_object_object_get_ex(obj, "name", &jvalue);
         const std::string name = json_object_get_string(jvalue);
         json_object_object_get_ex(obj, "properties", &jarray2);
         std::map<std::string, Property> props;
-        json_object_object_foreach(jarray2, key, val) {
+        json_object_object_foreach(jarray2, key, val)
+        {
             Property p;
             json_object_object_get_ex(val, "type", &jvalue);
             p.type = json_object_get_string(jvalue);
@@ -101,17 +106,20 @@ void High::parseConfigAndSubscribe(const std::string* confd)
     json_object_object_get_ex(config, "resources", &jarray1);
     arraylen1 = json_object_array_length(jarray1);
     std::map<std::string, int> toSubscribe;
-    for(int n = 0; n < arraylen1; ++n) {
+    for(int n = 0; n < arraylen1; ++n)
+    {
         obj = json_object_array_get_idx(jarray1, n);
         json_object_object_get_ex(obj, "name", &jvalue);
         const std::string name = json_object_get_string(jvalue);
         json_object_object_get_ex(obj, "values", &jarray2);
         const int arraylen2 = json_object_array_length(jarray2);
-        for(int i = 0; i < arraylen2; ++i) {
+        for(int i = 0; i < arraylen2; ++i)
+        {
             const std::string id = generateId();
             const std::string uri = name + id;
             jvalue = json_object_array_get_idx(jarray2, i);
-            if(properties.find(name) == properties.end()) {
+            if(properties.find(name) == properties.end())
+            {
                 AFB_WARNING("Unable to find name %s in properties", name.c_str());
                 continue;
             }
@@ -122,23 +130,28 @@ void High::parseConfigAndSubscribe(const std::string* confd)
             localProps["uri"] = props.at("uri");
             localProps["id"].value_string = std::string(id);
             localProps["uri"].value_string = std::string(uri);
-            json_object_object_foreach(jvalue, key, val) {
+            json_object_object_foreach(jvalue, key, val)
+            {
                 const std::string value = json_object_get_string(val);
-                if(props.find(key) == props.end()) {
+                if(props.find(key) == props.end())
+                {
                     AFB_WARNING("Unable to find key %s in properties", value.c_str());
                     continue;
                 }
                 Property prop = props.at(key);
-                if(startsWith(value, "${")) {
+                if(startsWith(value, "${"))
+                {
                     const std::string canMessage = value.substr(2, value.size() - 1);
                     const std::vector<std::string> params = split(canMessage, ',');
-                    if(params.size() != 2) {
+                    if(params.size() != 2)
+                    {
                         AFB_WARNING("Invalid CAN message definition %s", value.c_str());
                         continue;
                     }
                     prop.lowMessageName = params.at(0);
                     prop.interval = stoi(params.at(1));
-                    if(toSubscribe.find(prop.lowMessageName) != toSubscribe.end()) {
+                    if(toSubscribe.find(prop.lowMessageName) != toSubscribe.end())
+                    {
                         if(toSubscribe.at(prop.lowMessageName) > prop.interval)
                             toSubscribe[prop.lowMessageName] = prop.interval;
                     } else {
@@ -160,8 +173,10 @@ void High::parseConfigAndSubscribe(const std::string* confd)
                 localProps[key] = prop;
             }
             registeredObjects[uri] = localProps;
-            for(const auto &p : localProps) {
-                if(p.second.lowMessageName.size() > 0) {
+            for(const auto &p : localProps)
+            {
+                if(p.second.lowMessageName.size() > 0)
+                {
                     std::set<std::string> objectList;
                     if(lowMessagesToObjects.find(p.second.lowMessageName) != lowMessagesToObjects.end())
                         objectList = lowMessagesToObjects.at(p.second.lowMessageName);
@@ -171,10 +186,12 @@ void High::parseConfigAndSubscribe(const std::string* confd)
             }
         }
     }
-    for(const auto &p : toSubscribe) {
+    for(const auto &p : toSubscribe)
+    {
         json_object *jobj = json_object_new_object();
         json_object_object_add(jobj,"event", json_object_new_string(p.first.c_str()));
-        if(p.second > 0) {
+        if(p.second > 0)
+        {
             json_object *filter = json_object_new_object();
             json_object_object_add(filter, "frequency", json_object_new_double(1000.0 / (double)p.second));
             json_object_object_add(jobj, "filter", filter);
@@ -225,25 +242,32 @@ void High::tick(sd_event_source *source, const long &now, void *interv)
     const int interval = *(int*)interv;
     AFB_NOTICE("tick! %d %ld", interval, now);
     bool hasEvents = false;
-    if(timedEvents.find(interval) != timedEvents.end()) {
+    if(timedEvents.find(interval) != timedEvents.end())
+    {
         std::vector<TimedEvent> evts  = timedEvents[interval];
-        for(int i = (int)evts.size() - 1; i >= 0; --i) {
+        for(int i = (int)evts.size() - 1; i >= 0; --i)
+        {
             const TimedEvent e = evts.at(i);
             std::map<std::string, json_object*> jsons;
-            for(const auto &pp : registeredObjects) {
-                if(startsWith(pp.first, e.name)) {
+            for(const auto &pp : registeredObjects)
+            {
+                if(startsWith(pp.first, e.name))
+                {
                     jsons[pp.first] = generateJson(pp.first);
                 }
             }
             json_object *j = json_object_new_object();
-            if(jsons.size() == 1) {
+            if(jsons.size() == 1)
+            {
                 j = jsons[0];
-            } else if(jsons.size() > 1) {
+            } else if(jsons.size() > 1)
+            {
                 for(const auto &pp : jsons)
                     json_object_object_add(j, pp.first.c_str(), pp.second);
             }
             const int nbSubscribers = afb_event_push(e.event, j);
-            if(nbSubscribers == 0) {
+            if(nbSubscribers == 0)
+            {
                 afb_event_drop(e.event);
                 evts.erase(evts.begin() + i);
                 timedEvents[interval] = evts;
@@ -253,13 +277,15 @@ void High::tick(sd_event_source *source, const long &now, void *interv)
         if(evts.size() > 0)
             hasEvents = true;
     }
-    if(hasEvents) {
+    if(hasEvents)
+    {
         sd_event_source_set_time(source, now + interval * 1000);
         sd_event_source_set_enabled(source, SD_EVENT_ON);
     } else {
         //AFB_NOTICE("timer removed %d", interval);
         delete (int*)interv;
-        if(timers.find(interval) != timers.end()) {
+        if(timers.find(interval) != timers.end())
+        {
             timers.erase(interval);
         }
         sd_event_source_unref(source);
@@ -277,17 +303,20 @@ void High::treatMessage(json_object *message)
     json_object_object_get_ex(message, "name", &nameJson);
     json_object_object_get_ex(message, "value", &jvalue);
     const std::string messageName(json_object_get_string(nameJson));
-    if(lowMessagesToObjects.find(messageName) == lowMessagesToObjects.end()) {
+    if(lowMessagesToObjects.find(messageName) == lowMessagesToObjects.end())
+    {
         AFB_ERROR("message not linked to any object %s", json_object_get_string(message));
         return;
     }
 //    AFB_NOTICE("message received %s", json_object_get_string(message));
     const std::set<std::string> objects = lowMessagesToObjects.at(messageName);
     std::vector<std::string> candidateMessages;
-    for(const std::string &uri : objects) {
+    for(const std::string &uri : objects)
+    {
         std::map<std::string, Property> properties = registeredObjects.at(uri);
         std::string foundProperty;
-        for(const auto &p : properties) {
+        for(const auto &p : properties)
+        {
             if(p.second.lowMessageName != messageName)
                 continue;
             foundProperty = p.first;
@@ -295,7 +324,8 @@ void High::treatMessage(json_object *message)
             break;
         }
 
-        if(foundProperty.size() > 0) {
+        if(foundProperty.size() > 0)
+        {
             Property property = properties.at(foundProperty);
             if(property.type == "boolean")
                 property.value_bool = json_object_get_boolean(jvalue);
@@ -312,24 +342,32 @@ void High::treatMessage(json_object *message)
         }
     }
 /** at that point all objects have been updated. Now lets see if we should also send back messages to our subscribers. */
-    for(const std::string &m : candidateMessages) {
-        for(const auto &p : events) {
-            if(startsWith(m, p.first)) {
+    for(const std::string &m : candidateMessages)
+    {
+        for(const auto &p : events)
+        {
+            if(startsWith(m, p.first))
+            {
                 std::map<std::string, json_object*> jsons;
-                for(const auto &pp : registeredObjects) {
-                    if(startsWith(pp.first, p.first)) {
+                for(const auto &pp : registeredObjects)
+                {
+                    if(startsWith(pp.first, p.first))
+                    {
                         jsons[pp.first] = generateJson(pp.first);
                     }
                 }
                 json_object *j = json_object_new_object();
-                if(jsons.size() == 1) {
+                if(jsons.size() == 1)
+                {
                     j = jsons[0];
-                } else if(jsons.size() > 1) {
+                } else if(jsons.size() > 1)
+                {
                     for(const auto &pp : jsons)
                         json_object_object_add(j, pp.first.c_str(), pp.second);
                 }
                 const int nbSubscribers = afb_event_push(p.second, j);
-                if(nbSubscribers == 0) {
+                if(nbSubscribers == 0)
+                {
                     afb_event_drop(p.second);
                     events.erase(p.first);
                 }
@@ -348,21 +386,27 @@ json_object *High::generateJson(const std::string &messageObject, std::vector<st
 {
     json_object *json = json_object_new_object();
     const std::map<std::string, Property> props = registeredObjects.at(messageObject);
-    for(const auto &p : props) {
-        if(fields && fields->size() > 0 && p.first != "id" && p.first != "uri" && p.first != "name") {
+    for(const auto &p : props)
+    {
+        if(fields && fields->size() > 0 && p.first != "id" && p.first != "uri" && p.first != "name")
+        {
             if(std::find(fields->begin(), fields->end(), p.first) == fields->end())
                 continue;
         }
-        if(p.second.type == "string") {
+        if(p.second.type == "string")
+        {
             const std::string value = p.second.value_string;
             json_object_object_add(json, p.first.c_str(), json_object_new_string(value.c_str()));
-        } else if(p.second.type == "boolean") {
+        } else if(p.second.type == "boolean")
+        {
             const bool value = p.second.value_bool;
             json_object_object_add(json, p.first.c_str(), json_object_new_boolean(value));
-        } else if(p.second.type == "double") {
+        } else if(p.second.type == "double")
+        {
             const double value = p.second.value_double;
             json_object_object_add(json, p.first.c_str(), json_object_new_double(value));
-        } else if(p.second.type == "int") {
+        } else if(p.second.type == "int")
+        {
             const int value = p.second.value_int;
             json_object_object_add(json, p.first.c_str(), json_object_new_int(value));
         } else {
@@ -403,17 +447,22 @@ bool High::subscribe(afb_req request)
     std::string message(json_object_get_string(nameJson));
     if(message.size() == 0)
         return ok;
-    for(const auto &p : registeredObjects) {
-        if(startsWith(p.first, message)) {
+    for(const auto &p : registeredObjects)
+    {
+        if(startsWith(p.first, message))
+        {
             afb_event event;
-            if(ms <= 0) {
-                if(events.find(message) != events.end()) {
+            if(ms <= 0)
+            {
+                if(events.find(message) != events.end())
+                {
                     event = events.at(message);
                 } else {
                     event = afb_daemon_make_event(p.first.c_str());
                     events[message] = event;
                 }
-                if (afb_event_is_valid(event) && afb_req_subscribe(request, event) == 0) {
+                if (afb_event_is_valid(event) && afb_req_subscribe(request, event) == 0)
+                {
                     ok = true;
                 }
             } else {
@@ -422,20 +471,24 @@ bool High::subscribe(afb_req request)
                     evts = timedEvents.at(ms);
                 afb_event afbEvent;
                 bool found = false;
-                for(const auto & e : evts) {
-                    if(e.name == message) {
+                for(const auto & e : evts)
+                {
+                    if(e.name == message)
+                    {
                         afbEvent = e.event;
                         found = true;
                         break;
                     }
                 }
-                if(!found) {
+                if(!found)
+                {
                     char ext[20];
                     sprintf(ext, "_%d", ms);
                     std::string messageName = message + std::string(ext);
                     //AFB_NOTICE("subscribe with interval %s", messageName.c_str());
                     afbEvent = afb_daemon_make_event(messageName.c_str());
-                    if (!afb_event_is_valid(afbEvent)) {
+                    if (!afb_event_is_valid(afbEvent))
+                    {
                         AFB_ERROR("unable to create event");
                         return false;
                     }
@@ -447,17 +500,21 @@ bool High::subscribe(afb_req request)
                     evts.push_back(e);
                     timedEvents[ms] = evts;
                 }
-                if(afb_req_subscribe(request, afbEvent) == 0) {
+                if(afb_req_subscribe(request, afbEvent) == 0)
+                {
                     ok = true;
                 } else {
-                    if(!found) {
+                    if(!found)
+                    {
                         evts.erase(evts.end() - 1);
                         timedEvents[ms] = evts;
                     }
                 }
-                if(timedEvents.size() == 0) {
+                if(timedEvents.size() == 0)
+                {
                     timers.clear();
-                } else if(ok) {
+                } else if(ok)
+                {
                     startTimer(ms);
                 }
             }
@@ -486,8 +543,10 @@ bool High::unsubscribe(afb_req request)
     std::string message(json_object_get_string(nameJson));
     if(message.size() == 0)
         return false;
-    if(ms <= 0) {
-        if(events.find(message) != events.end()) {
+    if(ms <= 0)
+    {
+        if(events.find(message) != events.end())
+        {
             if(afb_req_unsubscribe(request, events.at(message)) == 0)
                 return true;
         }
@@ -497,8 +556,10 @@ bool High::unsubscribe(afb_req request)
         const auto evts = timedEvents.at(ms);
         afb_event afbEvent;
         bool found = false;
-        for(const auto & e : evts) {
-            if(e.name == message) {
+        for(const auto & e : evts)
+        {
+            if(e.name == message)
+            {
                 afbEvent = e.event;
                 found = true;
                 break;
@@ -527,25 +588,30 @@ bool High::get(afb_req request, json_object **json)
             return false;
     bool hasFields = json_object_object_get_ex(args, "fields", &fieldsJson);
     std::vector<std::string> fields;
-    if(hasFields) {
+    if(hasFields)
+    {
         int arraylen = json_object_array_length(fieldsJson);
         json_object* jvalue;
-        for(int i = 0; i < arraylen; ++i) {
+        for(int i = 0; i < arraylen; ++i)
+        {
           jvalue = json_object_array_get_idx(fieldsJson, i);
           fields.push_back(json_object_get_string(jvalue));
         }
     }
     const std::string name(json_object_get_string(nameJson));
     std::map<std::string, json_object*> jsons;
-    for(const auto &p : registeredObjects) {
+    for(const auto &p : registeredObjects)
+    {
         if(startsWith(p.first, name))
             jsons[p.first] = generateJson(p.first, &fields);
     }
-    if(jsons.size() == 0) {
+    if(jsons.size() == 0)
+    {
         return false;
     }
     json_object *j = json_object_new_object();
-    for(const auto &p : jsons) {
+    for(const auto &p : jsons)
+    {
         json_object_object_add(j, p.first.c_str(), p.second);
     }
     *json = j;
