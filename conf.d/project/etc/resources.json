@@ -1,0 +1,184 @@
+{
+	"resources": [{
+		"name": "/car/geoloc/",
+		"values": [{
+			"name": "latitude",
+			"unit": "degree",
+			"latitude": "${messages.gps.latitude,1000}",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "longitude",
+			"unit": "degree",
+			"latitude": "${messages.gps.longitude,1000}",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "altitude",
+			"unit": "meter",
+			"latitude": "${messages.gps.altitude,1000}",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "heading",
+			"unit": "degree",
+			"heading": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "speed",
+			"unit": "m/s",
+			"speed": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "climb",
+			"unit": "degree",
+			"climb": "",
+			"afb-service": "sensors"
+		},
+		{
+			"name": "roll_rate",
+			"unit": "degree/s",
+			"roll_rate": "",
+			"afb-service": "sensors"
+		},
+		{
+			"name": "pitch_rate",
+			"unit": "degree/s",
+			"pitch_rate": "",
+			"afb-service": "sensors"
+		},
+		{
+			"name": "yaw_rate",
+			"unit": "degree/s",
+			"yaw_rate": "",
+			"afb-service": "sensors"
+		},
+		{
+			"name": "pdop",
+			"pdop": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "hdop",
+			"hdop": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "vdop",
+			"vdop": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "used_satellites",
+			"used_satellites": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "tracked_satellites",
+			"tracked_satellites": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "visible_satellites",
+			"visible_satellites": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "sigma_hposition",
+			"unit": "meter",
+			"sigma_hposition": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "sigma_altitude",
+			"unit": "meter",
+			"sigma_altitude": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "sigma_heading",
+			"unit": "degree",
+			"sigma_heading": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "sigma_speed",
+			"unit": "m/s",
+			"sigma_speed": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "sigma_climb",
+			"unit": "degree",
+			"sigma_climb": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "gnss_fix_status",
+			"gnss_fix_status": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "dr_status",
+			"dr_status": "",
+			"afb-service": "low-can"
+		},
+		{
+			"name": "reliabilty_index",
+			"reliabilty_index": "",
+			"afb-service": "low-can"
+		}]
+	}, {
+		"name": "/car/doors/",
+		"values": [{
+				"name": "front_left",
+				"position": "front_left",
+				"isDoorOpen": "${messages.doors.front_left.open,-1}",
+				"isWindowOpen": "${messages.windows.front_left.open,-1}",
+				"afb-service": "low-can"
+			},
+			{
+				"name": "front_right",
+				"position": "front_right",
+				"isDoorOpen": "${messages.doors.front_right.open,-1}",
+				"isWindowOpen": "${messages.windows.front_right.open,-1}",
+				"afb-service": "low-can"
+			},
+			{
+				"name": "rear_left",
+				"position": "rear_left",
+				"isDoorOpen": "${messages.doors.rear_left.open,-1}",
+				"isWindowOpen": "${messages.windows.rear_left.open,-1}",
+				"afb-service": "low-can"
+			},
+			{
+				"name": "rear_right",
+				"position": "rear_right",
+				"isDoorOpen": "${messages.doors.rear_right.open,-1}",
+				"isWindowOpen": "${messages.windows.rear_right.open,-1}",
+				"afb-service": "low-can"
+			}
+		]
+	}, {
+		"name": "/car/demoboard/",
+		"values": [{
+			"name": "vehicleSpeed",
+			"unit": "km/h",
+			"speed": "${diagnostic_messages.vehicle.speed,1000}"
+		}, {
+			"name": "engineSpeed",
+			"unit": "rpm",
+			"rpm": "${diagnostic_messages.engine.speed,1000}"
+		}, {
+			"name": "fuelLevel",
+			"unit": "litre",
+			"level": "${diagnostic_messages.fuel.level,1000}"
+		}, {
+			"name": "engineLoad",
+			"unit": "Nm",
+			"load": "${diagnostic_messages.engine.load,1000}"
+		}]
+	}]
+}
