@@ -19,19 +19,21 @@ struct TimedEvent {
     std::string name;
     std::string eventName;
 };
+
 struct Property {
-    /**
-     * alternatively, instead of a value per type, we could use boost::any, or in c++17 variant.
-     */
-    std::string type;
-    std::string description;
-    std::string lowMessageName;
-    int interval;
-    bool value_bool;
-    std::string value_string;
-    double value_double;
-    int value_int;
-    Property() { interval = 0; value_bool = false; value_double = 0.0; value_int = 0;}
+	/**
+	 * alternatively, instead of a value per type, we could use boost::any, or in c++17 variant.
+	 */
+	std::string type;
+	std::string description;
+	std::string lowMessageName;
+	int interval;
+	int value_int;
+	bool value_bool;
+	double value_double;
+	std::string value_string;
+
+	Property() { interval = 0; value_int = 0; value_bool = false; value_double = 0.0;}
 };
 
 class High
@@ -45,11 +47,9 @@ public:
     void tick(sd_event_source *source, const long &now, void *interv);
     void startTimer(const int &t);
     ~High();
-    void parseConfigAndSubscribe(const std::string& confd);
-    void loadDefinition(const json_object* definitionsJ);
-    void loadResources(const json_object* resourcesJ);
     static bool startsWith(const std::string &s, const std::string &val);
     static void callBackFromSubscribe(void *handle, int iserror, json_object *result);
+	void parseConfigAndSubscribe(const std::string& confd);
 private:
     std::map<std::string, afb_event> events;
     std::map<int, std::vector<TimedEvent>> timedEvents;
@@ -58,4 +58,7 @@ private:
     std::set<int> timers;
     std::string generateId() const;
     json_object *generateJson(const std::string &messageObject, std::vector<std::string> *fields = nullptr);
+	void registerObjects(const std::string& uri, const std::map<std::string, Property>& properties);
+	std::map<std::string, std::map<std::string, Property>> loadDefinitions(json_object* definitionsJ) const;
+	void loadResources(json_object* resourcesJ);
 };
