@@ -13,12 +13,16 @@ high-can unsubscribe {"name":"/car/doors/","interval":5000}
 */
 
 #include <json-c/json.h>
-#include <algorithm>
-#include "high.hpp"
-#include "high-can-binding-hat.hpp"
 #include <time.h>
+#include <algorithm>
 #include <sstream>
 #include <iterator>
+
+#include "filescan-utils.h"
+#include "wrap-json.h"
+#include "high.hpp"
+#include "high-viwi-binding.hpp"
+
 /// @brief Split a std::string in several string, based on a delimeter
 ///
 /// @param[in] string: the string to be splitted, delim: the delimeter to use for splitting.
@@ -53,15 +57,17 @@ High::High()
 ///
 /// @param[in] confd - path to configuration directory which holds the binding configuration to load
 ///
-void High::parseConfigAndSubscribe(const std::string* confd)
+void High::parseConfigAndSubscribe(const std::string& confd)
 {
-    char *filename;
-    char*fullpath;
+    char* filename;
+    char* fullpath;
     std::vector<std::string> conf_files_path;
-    struct json_object* conf_filesJ = ScanForConfig(confd, CTL_SCAN_FLAT, "viwi", "json");
+
+    // Grab all config files with 'viwi' in their names in the path provided
+    struct json_object* conf_filesJ = ScanForConfig(confd.c_str(), CTL_SCAN_FLAT, "viwi", "json");
     if (!conf_filesJ || json_object_array_length(conf_filesJ) == 0)
     {
-        AFB_ERROR("No JSON config files found in %s", confd);
+        AFB_ERROR("No JSON config files found in %s", confd.c_str());
         return;
     }
 
@@ -69,7 +75,7 @@ void High::parseConfigAndSubscribe(const std::string* confd)
     {
         json_object *entryJ=json_object_array_get_idx(conf_filesJ, i);
 
-        err= wrap_json_unpack (entryJ, "{s:s, s:s !}", "fullpath",  &fullpath,"filename", &filename);
+        int err = wrap_json_unpack (entryJ, "{s:s, s:s !}", "fullpath",  &fullpath,"filename", &filename);
         if (err) {
             AFB_ERROR ("OOOPs invalid config file path = %s", json_object_get_string(entryJ));
             return;

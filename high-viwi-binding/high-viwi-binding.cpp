@@ -16,9 +16,13 @@
  * limitations under the License.
  */
 
-#include "high-can-binding-hat.hpp"
 #include <json-c/json.h>
+
+#include "high-viwi-binding.hpp"
+#include "high-viwi-apidef.h"
+#include "wrap-json.h"
 #include "high.hpp"
+
 High high;
 
 /// @brief callback for receiving message from low binding. Treatment itself is made in High class.
@@ -76,9 +80,10 @@ int ticked(sd_event_source *source, uint64_t t, void* data)
 
 /// @brief Initialize the binding.
 ///
-/// @param[in] service Structure which represent the Application Framework Binder.
-void initHigh()
+/// @return Exit code, zero if success.
+int init_service()
 {
+    AFB_DEBUG("High level binding is initializing");
+    AFB_NOTICE("High level binding is initialized and running");
+    return 0;
 }
-
-

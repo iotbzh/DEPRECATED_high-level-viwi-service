@@ -46,6 +46,8 @@ public:
     void startTimer(const int &t);
     ~High();
     void parseConfigAndSubscribe(const std::string& confd);
+    void loadDefinition(const json_object* definitionsJ);
+    void loadResources(const json_object* resourcesJ);
     static bool startsWith(const std::string &s, const std::string &val);
     static void callBackFromSubscribe(void *handle, int iserror, json_object *result);
 private:
