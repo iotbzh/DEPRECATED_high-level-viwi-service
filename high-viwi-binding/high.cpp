@@ -52,166 +52,232 @@ High::High()
 {
 }
 
+/// @brief Simply fill registeredObjects from loaded configuration.
+///
+/// @param[in] uri - ViWi xObject uri
+/// @param[in] properties - ViWi xObject properties retrieved
+void High::registerObjects(const std::string& uri, const std::map<std::string, Property>& properties)
+{
+	registeredObjects[uri] = properties;
+}
+
+/// @brief Handle definition JSON object parsing from provided
+/// configuration.
+///
+/// @param[in] definitions - pointer to the json_object that hold definitions
+///  JSON object to be parsed.
+std::map<std::string, std::map<std::string, Property>> High::loadDefinitions(json_object* definitions) const
+{
+	std::map<std::string, std::map<std::string, Property>> properties;
+
+	int arraylen1 = json_object_array_length(definitions);
+	for(int n = 0; n < arraylen1; ++n)
+	{
+		json_object* obj, *jvalue, *jproperties;
+		obj = json_object_array_get_idx(definitions, n);
+		json_object_object_get_ex(obj, "name", &jvalue);
+		const std::string name = json_object_get_string(jvalue);
+		if(! wrap_json_unpack(obj, "{s:o}", "properties", &jproperties))
+		{
+			std::map<std::string, Property> props;
+			json_object_object_foreach(jproperties, key, val)
+			{
+				Property p;
+				json_object_object_get_ex(val, "type", &jvalue);
+				p.type = json_object_get_string(jvalue);
+				json_object_object_get_ex(val, "description", &jvalue);
+				p.description = json_object_get_string(jvalue);
+				props[key] = p;
+			}
+			properties[name] = props;
+		}
+	}
+
+	return properties;
+}
+
+/// @brief Handle resources JSON object parsing from provided
+/// configuration.
+///
+/// @param[in] resources - pointer to the json_object that hold
+///  resources, previously defined, JSON object to be parsed.
+void High::loadResources(json_object* resources, const std::map<std::string, std::map<std::string, Property>>& properties)
+{
+	json_object* jarray1;
+	json_object_object_get_ex(resources, "resources", &jarray1);
+	int arraylen1 = json_object_array_length(jarray1);
+	std::map<std::string, int> toSubscribe;
+	for(int n = 0; n < arraylen1; ++n)
+	{
+		json_object* obj, *jvalue, *jarray2;
+		obj = json_object_array_get_idx(jarray1, n);
+		json_object_object_get_ex(obj, "name", &jvalue);
+		const std::string name = json_object_get_string(jvalue);
+		json_object_object_get_ex(obj, "values", &jarray2);
+		const int arraylen2 = json_object_array_length(jarray2);
+		for(int i = 0; i < arraylen2; ++i)
+		{
+			const std::string id = generateId();
+			const std::string uri = name + id;
+			jvalue = json_object_array_get_idx(jarray2, i);
+			if(properties.find(name) == properties.end())
+			{
+				AFB_WARNING("Unable to find name %s in properties", name.c_str());
+				continue;
+			}
+			const std::map<std::string, Property> props = properties[name];
+			std::map<std::string, Property> localProps; //note that local props can have less members than defined.
+			localProps["id"] = props.at("id");
+			localProps["name"] = props.at("name");
+			localProps["uri"] = props.at("uri");
+			localProps["id"].value_string = std::string(id);
+			localProps["uri"].value_string = std::string(uri);
+			json_object_object_foreach(jvalue, key, val)
+			{
+				const std::string value = json_object_get_string(val);
+				if(props.find(key) == props.end())
+				{
+					AFB_WARNING("Unable to find key %s in properties", value.c_str());
+					continue;
+				}
+				Property prop = props.at(key);
+				if(startsWith(value, "${"))
+				{
+					const std::string canMessage = value.substr(2, value.size() - 1);
+					const std::vector<std::string> params = split(canMessage, ',');
+					if(params.size() != 2)
+					{
+						AFB_WARNING("Invalid CAN message definition %s", value.c_str());
+						continue;
+					}
+					prop.lowMessageName = params.at(0);
+					prop.interval = stoi(params.at(1));
+					if(toSubscribe.find(prop.lowMessageName) != toSubscribe.end())
+					{
+						if(toSubscribe.at(prop.lowMessageName) > prop.interval)
+							toSubscribe[prop.lowMessageName] = prop.interval;
+					} else {
+						toSubscribe[prop.lowMessageName] = prop.interval;
+					}
+					switch (prop.type)
+					{
+						case "string":
+							prop.value_string = std::string("nul");
+							break;
+						case "boolean":
+							prop.value_bool = false;
+							break;
+						case "double":
+							prop.value_double = 0.0;
+							break;
+						case "int":
+							prop.value_int = 0;
+							break;
+						default:
+							AFB_ERROR("ERROR 2! unexpected type in parseConfig %s %s", prop.description.c_str(), prop.type.c_str());
+							break;
+					}
+				} else {
+					prop.value_string= std::string(value);
+				}
+				localProps[key] = prop;
+			}
+
+			registerObjects(uri, localProps);
+}
+
 /// @brief Reads the json configuration and generates accordingly the resources container. An UID is generated for each resource.
-///        Makes necessary subscriptions to low-level, eventually with a frequency.
+///		Makes necessary subscriptions to low-level, eventually with a frequency.
 ///
 /// @param[in] confd - path to configuration directory which holds the binding configuration to load
 ///
 void High::parseConfigAndSubscribe(const std::string& confd)
 {
-    char* filename;
-    char* fullpath;
-    std::vector<std::string> conf_files_path;
+	char* filename;
+	char* fullpath;
+	std::vector<std::string> conf_files_path;
 
-    // Grab all config files with 'viwi' in their names in the path provided
-    struct json_object* conf_filesJ = ScanForConfig(confd.c_str(), CTL_SCAN_FLAT, "viwi", "json");
-    if (!conf_filesJ || json_object_array_length(conf_filesJ) == 0)
-    {
-        AFB_ERROR("No JSON config files found in %s", confd.c_str());
-        return;
-    }
+	// Grab all config files with 'viwi' in their names in the path provided
+	struct json_object* conf_filesJ = ScanForConfig(confd.c_str(), CTL_SCAN_FLAT, "viwi", "json");
+	if (!conf_filesJ || json_object_array_length(conf_filesJ) == 0)
+	{
+		AFB_ERROR("No JSON config files found in %s", confd.c_str());
+		return;
+	}
 
-    for(int i=0; i < json_object_array_length(conf_filesJ); i++)
-    {
-        json_object *entryJ=json_object_array_get_idx(conf_filesJ, i);
+	for(int i=0; i < json_object_array_length(conf_filesJ); i++)
+	{
+		json_object *entryJ=json_object_array_get_idx(conf_filesJ, i);
 
-        int err = wrap_json_unpack (entryJ, "{s:s, s:s !}", "fullpath",  &fullpath,"filename", &filename);
-        if (err) {
-            AFB_ERROR ("OOOPs invalid config file path = %s", json_object_get_string(entryJ));
-            return;
-        }
-        std::string filepath = fullpath;
-        filepath += filename;
-        conf_files_path.push_back(filepath);
-    }
+		int err = wrap_json_unpack (entryJ, "{s:s, s:s !}", "fullpath",  &fullpath,"filename", &filename);
+		if (err) {
+			AFB_ERROR ("OOOPs invalid config file path = %s", json_object_get_string(entryJ));
+			return;
+		}
+		std::string filepath = fullpath;
+		filepath += filename;
+		conf_files_path.push_back(filepath);
+	}
 
-    json_object *config = json_object_from_file("high.json");
-    json_object *jvalue, *jarray1, *jarray2, *obj;
-    std::map<std::string, std::map<std::string, Property>> properties;
+	json_object *jarray1, *jarray2;
+	int i = 0;
+	std::map<std::string, std::map<std::string, Property>> properties;
+	while(properties.empty() || i < conf_files_path.size())
+	{
+		json_object *config = json_object_from_file(conf_files_path[i]);
+		if(! wrap_json_unpack(config, "{s:o}", "definition", &jarray1))
+		{
+			properties = loadDefinitions(jarray1);
+			conf_files_path.erase(i);
+		}
+		i++;
+	}
 
-    json_object_object_get_ex(config, "definitions", &jarray1);
-    int arraylen1 = json_object_array_length(jarray1);
-    for(int n = 0; n < arraylen1; ++n)
-    {
-        obj = json_object_array_get_idx(jarray1, n);
-        json_object_object_get_ex(obj, "name", &jvalue);
-        const std::string name = json_object_get_string(jvalue);
-        json_object_object_get_ex(obj, "properties", &jarray2);
-        std::map<std::string, Property> props;
-        json_object_object_foreach(jarray2, key, val)
-        {
-            Property p;
-            json_object_object_get_ex(val, "type", &jvalue);
-            p.type = json_object_get_string(jvalue);
-            json_object_object_get_ex(val, "description", &jvalue);
-            p.description = json_object_get_string(jvalue);
-            props[key] = p;
-        }
-        properties[name] = props;
-    }
-    json_object_object_get_ex(config, "resources", &jarray1);
-    arraylen1 = json_object_array_length(jarray1);
-    std::map<std::string, int> toSubscribe;
-    for(int n = 0; n < arraylen1; ++n)
-    {
-        obj = json_object_array_get_idx(jarray1, n);
-        json_object_object_get_ex(obj, "name", &jvalue);
-        const std::string name = json_object_get_string(jvalue);
-        json_object_object_get_ex(obj, "values", &jarray2);
-        const int arraylen2 = json_object_array_length(jarray2);
-        for(int i = 0; i < arraylen2; ++i)
-        {
-            const std::string id = generateId();
-            const std::string uri = name + id;
-            jvalue = json_object_array_get_idx(jarray2, i);
-            if(properties.find(name) == properties.end())
-            {
-                AFB_WARNING("Unable to find name %s in properties", name.c_str());
-                continue;
-            }
-            const std::map<std::string, Property> props = properties[name];
-            std::map<std::string, Property> localProps; //note that local props can have less members than defined.
-            localProps["id"] = props.at("id");
-            localProps["name"] = props.at("name");
-            localProps["uri"] = props.at("uri");
-            localProps["id"].value_string = std::string(id);
-            localProps["uri"].value_string = std::string(uri);
-            json_object_object_foreach(jvalue, key, val)
-            {
-                const std::string value = json_object_get_string(val);
-                if(props.find(key) == props.end())
-                {
-                    AFB_WARNING("Unable to find key %s in properties", value.c_str());
-                    continue;
-                }
-                Property prop = props.at(key);
-                if(startsWith(value, "${"))
-                {
-                    const std::string canMessage = value.substr(2, value.size() - 1);
-                    const std::vector<std::string> params = split(canMessage, ',');
-                    if(params.size() != 2)
-                    {
-                        AFB_WARNING("Invalid CAN message definition %s", value.c_str());
-                        continue;
-                    }
-                    prop.lowMessageName = params.at(0);
-                    prop.interval = stoi(params.at(1));
-                    if(toSubscribe.find(prop.lowMessageName) != toSubscribe.end())
-                    {
-                        if(toSubscribe.at(prop.lowMessageName) > prop.interval)
-                            toSubscribe[prop.lowMessageName] = prop.interval;
-                    } else {
-                        toSubscribe[prop.lowMessageName] = prop.interval;
-                    }
-                    if(prop.type == "string")
-                        prop.value_string = std::string("nul");
-                    else if(prop.type == "boolean")
-                        prop.value_bool = false;
-                    else if(prop.type == "double")
-                        prop.value_double = 0.0;
-                    else if(prop.type == "int")
-                        prop.value_int = 0;
-                    else
-                        AFB_ERROR("ERROR 2! unexpected type in parseConfig %s %s", prop.description.c_str(), prop.type.c_str());
-                } else {
-                    prop.value_string= std::string(value);
-                }
-                localProps[key] = prop;
-            }
-            registeredObjects[uri] = localProps;
-            for(const auto &p : localProps)
-            {
-                if(p.second.lowMessageName.size() > 0)
-                {
-                    std::set<std::string> objectList;
-                    if(lowMessagesToObjects.find(p.second.lowMessageName) != lowMessagesToObjects.end())
-                        objectList = lowMessagesToObjects.at(p.second.lowMessageName);
-                    objectList.insert(uri);
-                    lowMessagesToObjects[p.second.lowMessageName] = objectList;
-                }
-            }
-        }
-    }
-    for(const auto &p : toSubscribe)
-    {
-        json_object *jobj = json_object_new_object();
-        json_object_object_add(jobj,"event", json_object_new_string(p.first.c_str()));
-        if(p.second > 0)
-        {
-            json_object *filter = json_object_new_object();
-            json_object_object_add(filter, "frequency", json_object_new_double(1000.0 / (double)p.second));
-            json_object_object_add(jobj, "filter", filter);
-        }
-        json_object *dummy;
-        const std::string js = json_object_get_string(jobj);
-        if(afb_service_call_sync("low-can", "subscribe", jobj, &dummy) < 0)
-            AFB_ERROR("high-can subscription to low-can FAILED %s", js.c_str());
-        else
-            AFB_NOTICE("high-can subscribed to low-can %s", js.c_str());
-        json_object_put(dummy);
-    }
-    json_object_put(config);
-    AFB_NOTICE("configuration loaded");
+	// Search for resources JSON node to load them if
+	// definition has been found.
+	if(! properties.empty())
+	{
+		for(const std::string& filepath: conf_files_path)
+		{
+			if(! wrap_json_unpack(config, "{s:o}", "resources", &jarray2))
+			{
+				loadResources(jarray2, properties);
+			}
+		}
+	}
+			for(const auto &p : localProps)
+			{
+				if(p.second.lowMessageName.size() > 0)
+				{
+					std::set<std::string> objectList;
+					if(lowMessagesToObjects.find(p.second.lowMessageName) != lowMessagesToObjects.end())
+						objectList = lowMessagesToObjects.at(p.second.lowMessageName);
+					objectList.insert(uri);
+					lowMessagesToObjects[p.second.lowMessageName] = objectList;
+				}
+			}
+		}
+	}
+	for(const auto &p : toSubscribe)
+	{
+		json_object *jobj = json_object_new_object();
+		json_object_object_add(jobj,"event", json_object_new_string(p.first.c_str()));
+		if(p.second > 0)
+		{
+			json_object *filter = json_object_new_object();
+			json_object_object_add(filter, "frequency", json_object_new_double(1000.0 / (double)p.second));
+			json_object_object_add(jobj, "filter", filter);
+		}
+		json_object *dummy;
+		const std::string js = json_object_get_string(jobj);
+		if(afb_service_call_sync("low-can", "subscribe", jobj, &dummy) < 0)
+			AFB_ERROR("high-can subscription to low-can FAILED %s", js.c_str());
+		else
+			AFB_NOTICE("high-can subscribed to low-can %s", js.c_str());
+		json_object_put(dummy);
+	}
+	json_object_put(config);
+	AFB_NOTICE("configuration loaded");
 }
 
 /// @brief Create and start a systemD timer. Only one timer is created per frequency.
