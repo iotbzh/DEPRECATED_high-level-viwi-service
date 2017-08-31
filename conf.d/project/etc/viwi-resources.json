@@ -10,13 +10,13 @@
 		{
 			"name": "longitude",
 			"unit": "degree",
-			"latitude": "${messages.gps.longitude,1000}",
+			"longitude": "${messages.gps.longitude,1000}",
 			"afb-service": "low-can"
 		},
 		{
 			"name": "altitude",
 			"unit": "meter",
-			"latitude": "${messages.gps.altitude,1000}",
+			"altitude": "${messages.gps.altitude,1000}",
 			"afb-service": "low-can"
 		},
 		{
