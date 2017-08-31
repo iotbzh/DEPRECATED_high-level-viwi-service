@@ -28,54 +28,54 @@ High high;
 /// @brief callback for receiving message from low binding. Treatment itself is made in High class.
 void onEvent(const char *event, json_object *object)
 {
-    high.treatMessage(object);
+	high.treatMessage(object);
 }
 /// @brief entry point for client subscription request. Treatment itself is made in High class.
 void subscribe(afb_req request)
 {
-    if(high.subscribe(request))
-        afb_req_success(request, NULL, NULL);
-    else
-        afb_req_fail(request, "error", NULL);
+	if(high.subscribe(request))
+		afb_req_success(request, NULL, NULL);
+	else
+		afb_req_fail(request, "error", NULL);
 }
 
 /// @brief entry point for client un-subscription request. Treatment itself is made in High class.
 void unsubscribe(afb_req request)
 {
-    if(high.unsubscribe(request))
-        afb_req_success(request, NULL, NULL);
-    else
-        afb_req_fail(request, "error", NULL);
+	if(high.unsubscribe(request))
+		afb_req_success(request, NULL, NULL);
+	else
+		afb_req_fail(request, "error", NULL);
 }
 
 /// @brief verb that loads JSON configuration (old high.json file now)
 void load(afb_req request)
 {
-    json_object* args = afb_req_json(request);
-    const char* confd;
+	json_object* args = afb_req_json(request);
+	const char* confd;
 
-    wrap_json_unpack(args, "{s:s}", "path", &confd);
-    high.parseConfigAndSubscribe(confd);
+	wrap_json_unpack(args, "{s:s}", "path", &confd);
+	high.parseConfigAndSubscribe(confd);
 }
 
 /// @brief entry point for get requests. Treatment itself is made in High class.
 void get(afb_req request)
 {
-    json_object *jobj;
-    if(high.get(request, &jobj))
-    {
-        afb_req_success(request, jobj, NULL);
-    } else {
-        afb_req_fail(request, "error", NULL);
-    }
+	json_object *jobj;
+	if(high.get(request, &jobj))
+	{
+		afb_req_success(request, jobj, NULL);
+	} else {
+		afb_req_fail(request, "error", NULL);
+	}
 }
 
 /// @brief entry point for systemD timers. Treatment itself is made in High class.
 /// @param[in] source: systemD timer, t: time of tick, data: interval (ms).
 int ticked(sd_event_source *source, uint64_t t, void* data)
 {
-    high.tick(source, t, data);
-    return 0;
+	high.tick(source, t, data);
+	return 0;
 }
 
 /// @brief Initialize the binding.
@@ -83,7 +83,7 @@ int ticked(sd_event_source *source, uint64_t t, void* data)
 /// @return Exit code, zero if success.
 int init_service()
 {
-    AFB_DEBUG("High level binding is initializing");
-    AFB_NOTICE("High level binding is initialized and running");
-    return 0;
+	AFB_DEBUG("High level binding is initializing");
+	AFB_NOTICE("High level binding is initialized and running");
+	return 0;
 }
