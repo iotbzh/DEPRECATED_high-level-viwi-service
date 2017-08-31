@@ -8,9 +8,5 @@ extern "C"
 };
 
     void onEvent(const char *event, struct json_object *object);
-    void subscribe(afb_req request);
-    void unsubscribe(afb_req request);
-    void load(afb_req request);
-    void get(afb_req request);
-    void initHigh();
+    int init_service();
     int ticked(sd_event_source *source, uint64_t t, void *data);
