@@ -73,20 +73,20 @@ std::map<std::string, std::map<std::string, Property>> High::loadDefinitions(jso
 	int arraylen1 = json_object_array_length(definitions);
 	for(int n = 0; n < arraylen1; ++n)
 	{
-		json_object* obj, *jvalue, *jproperties;
-		obj = json_object_array_get_idx(definitions, n);
-		json_object_object_get_ex(obj, "name", &jvalue);
+		json_object* definition, *jvalue, *jproperties;
+		definition = json_object_array_get_idx(definitions, n);
+		json_object_object_get_ex(definition, "name", &jvalue);
 		const std::string name = json_object_get_string(jvalue);
-		if(! wrap_json_unpack(obj, "{s:o}", "properties", &jproperties))
+		if(! wrap_json_unpack(definition, "{s:o}", "properties", &jproperties))
 		{
 			std::map<std::string, Property> props;
 			json_object_object_foreach(jproperties, key, val)
 			{
 				Property p;
-				json_object_object_get_ex(val, "type", &jvalue);
-				p.type = json_object_get_string(jvalue);
-				json_object_object_get_ex(val, "description", &jvalue);
-				p.description = json_object_get_string(jvalue);
+				const char *type, *description, *afbService;
+				wrap_json_unpack(val, "{ s:s s:s s?s }", "type", &type, "description", &description, "afb-service", &afbService);
+				p.type = type;
+				p.description = description;
 				props[key] = p;
 			}
 			properties[name] = props;
@@ -101,28 +101,27 @@ std::map<std::string, std::map<std::string, Property>> High::loadDefinitions(jso
 ///
 /// @param[in] resources - pointer to the json_object that hold
 ///  resources, previously defined, JSON object to be parsed.
-void High::loadResources(json_object* resources, const std::map<std::string, std::map<std::string, Property>>& properties)
+void High::loadResources(json_object* resources, std::map<std::string, std::map<std::string, Property>>& properties)
 {
-	json_object* jarray1;
-	json_object_object_get_ex(resources, "resources", &jarray1);
-	int arraylen1 = json_object_array_length(jarray1);
+	int arraylen1 = json_object_array_length(resources);
 	std::map<std::string, int> toSubscribe;
 	for(int n = 0; n < arraylen1; ++n)
 	{
-		json_object* obj, *jvalue, *jarray2;
-		obj = json_object_array_get_idx(jarray1, n);
-		json_object_object_get_ex(obj, "name", &jvalue);
-		const std::string name = json_object_get_string(jvalue);
-		json_object_object_get_ex(obj, "values", &jarray2);
-		const int arraylen2 = json_object_array_length(jarray2);
+		json_object* resource, *resource_values;
+		const char* name;
+
+		resource = json_object_array_get_idx(resources, n);
+		wrap_json_unpack(resource, "{s:s, s?o}", "name", &name, "values", &resource_values);
+		const int arraylen2 = json_object_array_length(resource_values);
 		for(int i = 0; i < arraylen2; ++i)
 		{
+			json_object* resource_value;
 			const std::string id = generateId();
 			const std::string uri = name + id;
-			jvalue = json_object_array_get_idx(jarray2, i);
+			resource_value = json_object_array_get_idx(resource_values, i);
 			if(properties.find(name) == properties.end())
 			{
-				AFB_WARNING("Unable to find name %s in properties", name.c_str());
+				AFB_WARNING("Unable to find name %s in properties", name);
 				continue;
 			}
 			const std::map<std::string, Property> props = properties[name];
@@ -132,7 +131,7 @@ void High::loadResources(json_object* resources, const std::map<std::string, std
 			localProps["uri"] = props.at("uri");
 			localProps["id"].value_string = std::string(id);
 			localProps["uri"].value_string = std::string(uri);
-			json_object_object_foreach(jvalue, key, val)
+			json_object_object_foreach(resource_value, key, val)
 			{
 				const std::string value = json_object_get_string(val);
 				if(props.find(key) == props.end())
@@ -156,34 +155,42 @@ void High::loadResources(json_object* resources, const std::map<std::string, std
 					{
 						if(toSubscribe.at(prop.lowMessageName) > prop.interval)
 							toSubscribe[prop.lowMessageName] = prop.interval;
-					} else {
+					}
+					else
+					{
 						toSubscribe[prop.lowMessageName] = prop.interval;
 					}
-					switch (prop.type)
-					{
-						case "string":
-							prop.value_string = std::string("nul");
-							break;
-						case "boolean":
-							prop.value_bool = false;
-							break;
-						case "double":
-							prop.value_double = 0.0;
-							break;
-						case "int":
-							prop.value_int = 0;
-							break;
-						default:
-							AFB_ERROR("ERROR 2! unexpected type in parseConfig %s %s", prop.description.c_str(), prop.type.c_str());
-							break;
-					}
-				} else {
-					prop.value_string= std::string(value);
+
+					if(prop.type == "string")
+						prop.value_string = std::string("nul");
+					else if(prop.type == "boolean")
+						prop.value_bool = false;
+					else if(prop.type == "double")
+						prop.value_double = 0.0;
+					else if(prop.type == "int")
+						prop.value_int = 0;
+					else
+						AFB_ERROR("ERROR 2! unexpected type in parseConfig %s %s", prop.description.c_str(), prop.type.c_str());
 				}
+				else
+					{prop.value_string= std::string(value);}
 				localProps[key] = prop;
 			}
-
 			registerObjects(uri, localProps);
+			for(const auto &p : localProps)
+			{
+				if(p.second.lowMessageName.size() > 0)
+				{
+					std::set<std::string> objectList;
+					if(lowMessagesToObjects.find(p.second.lowMessageName) != lowMessagesToObjects.end())
+						{objectList = lowMessagesToObjects.at(p.second.lowMessageName);}
+					objectList.insert(uri);
+					objectList.insert(localProps["afb-service"].value_string);
+					lowMessagesToObjects[p.second.lowMessageName] = objectList;
+				}
+			}
+		}
+	}
 }
 
 /// @brief Reads the json configuration and generates accordingly the resources container. An UID is generated for each resource.
@@ -205,6 +212,7 @@ void High::parseConfigAndSubscribe(const std::string& confd)
 		return;
 	}
 
+	// Fill a vector of config files path
 	for(int i=0; i < json_object_array_length(conf_filesJ); i++)
 	{
 		json_object *entryJ=json_object_array_get_idx(conf_filesJ, i);
@@ -215,6 +223,7 @@ void High::parseConfigAndSubscribe(const std::string& confd)
 			return;
 		}
 		std::string filepath = fullpath;
+		filepath += "/";
 		filepath += filename;
 		conf_files_path.push_back(filepath);
 	}
@@ -224,12 +233,13 @@ void High::parseConfigAndSubscribe(const std::string& confd)
 	std::map<std::string, std::map<std::string, Property>> properties;
 	while(properties.empty() || i < conf_files_path.size())
 	{
-		json_object *config = json_object_from_file(conf_files_path[i]);
-		if(! wrap_json_unpack(config, "{s:o}", "definition", &jarray1))
+		json_object *config = json_object_from_file(conf_files_path[i].c_str());
+		if(! wrap_json_unpack(config, "{s?o}", "definitions", &jarray1))
 		{
 			properties = loadDefinitions(jarray1);
-			conf_files_path.erase(i);
+			conf_files_path.erase(conf_files_path.begin() + i);
 		}
+		json_object_put(config);
 		i++;
 	}
 
@@ -239,45 +249,52 @@ void High::parseConfigAndSubscribe(const std::string& confd)
 	{
 		for(const std::string& filepath: conf_files_path)
 		{
-			if(! wrap_json_unpack(config, "{s:o}", "resources", &jarray2))
+			json_object *config = json_object_from_file(filepath.c_str());
+			if(! wrap_json_unpack(config, "{s?o}", "resources", &jarray2))
 			{
 				loadResources(jarray2, properties);
 			}
+			json_object_put(config);
 		}
 	}
-			for(const auto &p : localProps)
+	AFB_NOTICE("configuration loaded");
+
+	subscribeRegisteredObjects();
+}
+
+int High::subscribeRegisteredObjects() const
+{
+	int ok = 0;
+	int i = 0;
+	for(const auto &xObject : registeredObjects)
+	{
+		for(const auto &obj_prop: xObject.second)
+		{
+			if(! obj_prop.second.lowMessageName.empty())
 			{
-				if(p.second.lowMessageName.size() > 0)
+				i++;
+				json_object *jobj = json_object_new_object();
+				json_object_object_add(jobj,"event", json_object_new_string(obj_prop.second.lowMessageName.c_str()));
+				if(obj_prop.second.interval > 0)
 				{
-					std::set<std::string> objectList;
-					if(lowMessagesToObjects.find(p.second.lowMessageName) != lowMessagesToObjects.end())
-						objectList = lowMessagesToObjects.at(p.second.lowMessageName);
-					objectList.insert(uri);
-					lowMessagesToObjects[p.second.lowMessageName] = objectList;
+					json_object *filter = json_object_new_object();
+					json_object_object_add(filter, "frequency", json_object_new_double(1000.0 / (double)obj_prop.second.interval));
+					json_object_object_add(jobj, "filter", filter);
 				}
+				json_object *dummy;
+				const std::string js = json_object_get_string(jobj);
+				if(afb_service_call_sync("low-can", "subscribe", jobj, &dummy) < 0)
+					AFB_ERROR("high-can subscription to low-can FAILED %s", js.c_str());
+				else
+				{
+					AFB_NOTICE("high-can subscribed to low-can %s", js.c_str());
+					ok++;
+				}
+				json_object_put(dummy);
 			}
 		}
 	}
-	for(const auto &p : toSubscribe)
-	{
-		json_object *jobj = json_object_new_object();
-		json_object_object_add(jobj,"event", json_object_new_string(p.first.c_str()));
-		if(p.second > 0)
-		{
-			json_object *filter = json_object_new_object();
-			json_object_object_add(filter, "frequency", json_object_new_double(1000.0 / (double)p.second));
-			json_object_object_add(jobj, "filter", filter);
-		}
-		json_object *dummy;
-		const std::string js = json_object_get_string(jobj);
-		if(afb_service_call_sync("low-can", "subscribe", jobj, &dummy) < 0)
-			AFB_ERROR("high-can subscription to low-can FAILED %s", js.c_str());
-		else
-			AFB_NOTICE("high-can subscribed to low-can %s", js.c_str());
-		json_object_put(dummy);
-	}
-	json_object_put(config);
-	AFB_NOTICE("configuration loaded");
+	return ok == i ? 0 : -1;
 }
 
 /// @brief Create and start a systemD timer. Only one timer is created per frequency.
@@ -356,10 +373,7 @@ void High::tick(sd_event_source *source, const long &now, void *interv)
 	} else {
 		//AFB_NOTICE("timer removed %d", interval);
 		delete (int*)interv;
-		if(timers.find(interval) != timers.end())
-		{
-			timers.erase(interval);
-		}
+		timers.erase(interval);
 		sd_event_source_unref(source);
 	}
 }
@@ -663,11 +677,10 @@ bool High::get(afb_req request, json_object **json)
 	if(hasFields)
 	{
 		int arraylen = json_object_array_length(fieldsJson);
-		json_object* jvalue;
 		for(int i = 0; i < arraylen; ++i)
 		{
-		  jvalue = json_object_array_get_idx(fieldsJson, i);
-		  fields.push_back(json_object_get_string(jvalue));
+			json_object* jvalue = json_object_array_get_idx(fieldsJson, i);
+			fields.push_back(json_object_get_string(jvalue));
 		}
 	}
 	const std::string name(json_object_get_string(nameJson));

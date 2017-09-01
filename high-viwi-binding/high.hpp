@@ -60,5 +60,6 @@ private:
 	json_object *generateJson(const std::string &messageObject, std::vector<std::string> *fields = nullptr);
 	void registerObjects(const std::string& uri, const std::map<std::string, Property>& properties);
 	std::map<std::string, std::map<std::string, Property>> loadDefinitions(json_object* definitionsJ) const;
-	void loadResources(json_object* resourcesJ);
+	void loadResources(json_object* resourcesJ, std::map<std::string, std::map<std::string, Property>>& properties);
+	int subscribeRegisteredObjects() const;
 };
