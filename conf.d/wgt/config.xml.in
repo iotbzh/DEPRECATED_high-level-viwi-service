@@ -12,6 +12,6 @@
 	</feature>
 	<feature name="urn:AGL:widget:provided-api">
 		<param name="#target" value="main" />
-		<param name="high-can" value="ws" />
+		<param name="high-viwi" value="ws" />
 	</feature>
 </widget>

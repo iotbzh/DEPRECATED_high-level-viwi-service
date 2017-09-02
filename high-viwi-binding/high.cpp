@@ -1,15 +1,15 @@
 /**
 TYPICAL COMMANDS:
-high-can start
-high-can get {"name":"/car/doors/"}
-high-can get {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3"}
-high-can get {"name":"/car/doors/","fields":["isDoorOpen"]}
-high-can subscribe {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3"} note: fields parameter on subscribe is not implemented yet
-high-can unsubscribe {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3"}
-high-can subscribe {"name":"/car/doors/"}
-high-can subscribe {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3","interval":5000}
-high-can subscribe {"name":"/car/doors/","interval":5000}
-high-can unsubscribe {"name":"/car/doors/","interval":5000}
+high-viwi start
+high-viwi get {"name":"/car/doors/"}
+high-viwi get {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3"}
+high-viwi get {"name":"/car/doors/","fields":["isDoorOpen"]}
+high-viwi subscribe {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3"} note: fields parameter on subscribe is not implemented yet
+high-viwi unsubscribe {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3"}
+high-viwi subscribe {"name":"/car/doors/"}
+high-viwi subscribe {"name":"/car/doors/6078d4-23b89b-8faaa9-8bd0f3","interval":5000}
+high-viwi subscribe {"name":"/car/doors/","interval":5000}
+high-viwi unsubscribe {"name":"/car/doors/","interval":5000}
 */
 
 #include <json-c/json.h>
@@ -284,10 +284,10 @@ int High::subscribeRegisteredObjects() const
 				json_object *dummy;
 				const std::string js = json_object_get_string(jobj);
 				if(afb_service_call_sync("low-can", "subscribe", jobj, &dummy) < 0)
-					AFB_ERROR("high-can subscription to low-can FAILED %s", js.c_str());
+					AFB_ERROR("high-viwi subscription to low-can FAILED %s", js.c_str());
 				else
 				{
-					AFB_NOTICE("high-can subscribed to low-can %s", js.c_str());
+					AFB_NOTICE("high-viwi subscribed to low-can %s", js.c_str());
 					ok++;
 				}
 				json_object_put(dummy);
