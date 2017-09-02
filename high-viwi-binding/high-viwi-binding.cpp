@@ -45,7 +45,7 @@ void unsubscribe(afb_req request)
 	if(high.unsubscribe(request))
 		afb_req_success(request, NULL, NULL);
 	else
-		afb_req_fail(request, "error", NULL);
+		afb_req_fail(request, "error when unsubscribe", NULL);
 }
 
 /// @brief verb that loads JSON configuration (old high.json file now)
@@ -55,7 +55,11 @@ void load(afb_req request)
 	const char* confd;
 
 	wrap_json_unpack(args, "{s:s}", "path", &confd);
-	high.parseConfigAndSubscribe(confd);
+	int ret = high.parseConfigAndSubscribe(confd);
+	if( ret == 0)
+		afb_req_success(request, NULL, NULL);
+	else
+		afb_req_fail_f(request, "Loading configuration or subscription error", "Error code: %d", ret);
 }
 
 /// @brief entry point for get requests. Treatment itself is made in High class.
