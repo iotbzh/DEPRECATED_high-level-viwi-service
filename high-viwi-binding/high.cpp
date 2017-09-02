@@ -198,7 +198,7 @@ void High::loadResources(json_object* resources, std::map<std::string, std::map<
 ///
 /// @param[in] confd - path to configuration directory which holds the binding configuration to load
 ///
-void High::parseConfigAndSubscribe(const std::string& confd)
+int High::parseConfigAndSubscribe(const std::string& confd)
 {
 	char* filename;
 	char* fullpath;
@@ -209,7 +209,7 @@ void High::parseConfigAndSubscribe(const std::string& confd)
 	if (!conf_filesJ || json_object_array_length(conf_filesJ) == 0)
 	{
 		AFB_ERROR("No JSON config files found in %s", confd.c_str());
-		return;
+		return -1;
 	}
 
 	// Fill a vector of config files path
@@ -220,7 +220,7 @@ void High::parseConfigAndSubscribe(const std::string& confd)
 		int err = wrap_json_unpack (entryJ, "{s:s, s:s !}", "fullpath",  &fullpath,"filename", &filename);
 		if (err) {
 			AFB_ERROR ("OOOPs invalid config file path = %s", json_object_get_string(entryJ));
-			return;
+			return -1;
 		}
 		std::string filepath = fullpath;
 		filepath += "/";
@@ -259,7 +259,7 @@ void High::parseConfigAndSubscribe(const std::string& confd)
 	}
 	AFB_NOTICE("configuration loaded");
 
-	subscribeRegisteredObjects();
+	return subscribeRegisteredObjects();
 }
 
 int High::subscribeRegisteredObjects() const
@@ -294,7 +294,9 @@ int High::subscribeRegisteredObjects() const
 			}
 		}
 	}
-	return ok == i ? 0 : -1;
+
+	AFB_DEBUG("Subscribed to %d/%d signals.", ok, i);
+	return ok == i ? 0 : -2;
 }
 
 /// @brief Create and start a systemD timer. Only one timer is created per frequency.

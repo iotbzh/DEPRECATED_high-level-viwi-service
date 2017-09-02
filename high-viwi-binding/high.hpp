@@ -47,7 +47,7 @@ public:
 	void tick(sd_event_source *source, const long &now, void *interv);
 	void startTimer(const int &t);
 	~High();
-	void parseConfigAndSubscribe(const std::string& confd);
+	int parseConfigAndSubscribe(const std::string& confd);
 	static bool startsWith(const std::string &s, const std::string &val);
 	static void callBackFromSubscribe(void *handle, int iserror, json_object *result);
 private:
