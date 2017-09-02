@@ -21,7 +21,7 @@
 PROJECT_TARGET_ADD(high-viwi)
 
 	# Define project Targets
-	add_library(${TARGET_NAME} MODULE ${TARGET_NAME}-binding.cpp high.cpp)
+	add_library(${TARGET_NAME} MODULE ${TARGET_NAME}-binding.cpp high.cpp ctl-lua.c)
 
 	# Binder exposes a unique public entry point
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
