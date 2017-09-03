@@ -26,11 +26,13 @@
 
 #define _GNU_SOURCE
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <string.h>
+#include <filescan-utils.h>
+#include <wrap-json.h>
 
 #include "ctl-lua.h"
-#include "high-viwi-binding.hpp"
-#include "wrap-json.h"
 
 #define LUA_FIST_ARG 2  // when using luaL_newlib calllback receive libtable as 1st arg
 #define LUA_MSG_MAX_LENGTH 512
@@ -38,10 +40,6 @@
 
 #define CTX_MAGIC 123456789
 #define CTX_TOKEN "AFB_ctx"
-
-#ifndef CONTROL_MAXPATH_LEN
-#define CONTROL_MAXPATH_LEN 255
-#endif
 
 static afb_req NULL_AFBREQ = {};
 
@@ -729,6 +727,7 @@ static void LuaDoAction (LuaDoActionT action, afb_req request) {
 			char *filename; char*fullpath;
 			char luaScriptPath[CONTROL_MAXPATH_LEN];
 			int index;
+			BPaths BindingPaths = GetBindingDirsPath();
 
 			// scan luascript search path once
 			static json_object *luaScriptPathJ =NULL;
@@ -747,7 +746,7 @@ static void LuaDoAction (LuaDoActionT action, afb_req request) {
 				strncpy(luaScriptPath,CONTROL_DOSCRIPT_PRE, sizeof(luaScriptPath));
 				strncat(luaScriptPath,"-", sizeof(luaScriptPath)-strlen(luaScriptPath)-1);
 				strncat(luaScriptPath,target, sizeof(luaScriptPath)-strlen(luaScriptPath)-1);
-				luaScriptPathJ= ScanForConfig(CONTROL_LUA_PATH , CTL_SCAN_RECURSIVE,luaScriptPath,".lua");
+				luaScriptPathJ= ScanForConfig(BindingPaths.etcdir, CTL_SCAN_RECURSIVE,luaScriptPath,".lua");
 			}
 			for (index=0; index < json_object_array_length(luaScriptPathJ); index++) {
 				json_object *entryJ=json_object_array_get_idx(luaScriptPathJ, index);
@@ -1003,7 +1002,7 @@ int LuaLibInit () {
 	strncat (fullprefix, "-", sizeof(fullprefix)-strlen(fullprefix)-1);
 
 	const char *dirList= getenv("CONTROL_LUA_PATH");
-	if (!dirList) dirList=CONTROL_LUA_PATH;
+	if (!dirList) dirList=BindingPaths.etcdir;
 
 	json_object *luaScriptPathJ = ScanForConfig(dirList , CTL_SCAN_RECURSIVE, fullprefix, "lua");
 
@@ -1070,4 +1069,3 @@ int LuaLibInit () {
  OnErrorExit:
 	return 1;
 }
-c

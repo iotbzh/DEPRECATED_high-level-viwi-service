@@ -264,6 +264,7 @@ int High::parseConfigAndSubscribe(const std::string& confd)
 
 int High::subscribeRegisteredObjects() const
 {
+	BPaths BindingPaths = GetBindingDirsPath();
 	int ok = 0;
 	int i = 0;
 	for(const auto &xObject : registeredObjects)
@@ -272,6 +273,7 @@ int High::subscribeRegisteredObjects() const
 		{
 			if(! obj_prop.second.lowMessageName.empty())
 			{
+				//ScanForConfig(BindingPaths.datadir, "low-can", "lua");
 				i++;
 				json_object *jobj = json_object_new_object();
 				json_object_object_add(jobj,"event", json_object_new_string(obj_prop.second.lowMessageName.c_str()));
