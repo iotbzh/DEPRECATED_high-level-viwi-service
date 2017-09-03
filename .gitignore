@@ -15,3 +15,6 @@ docs_doxygen
 node_modules/
 packaging/
 _book/
+GPATH
+GRTAGS
+GTAGS
