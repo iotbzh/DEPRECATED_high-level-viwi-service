@@ -234,7 +234,7 @@ int High::parseConfigAndSubscribe(const std::string& confd)
 	while(properties.empty() || i < conf_files_path.size())
 	{
 		json_object *config = json_object_from_file(conf_files_path[i].c_str());
-		if(! wrap_json_unpack(config, "{s?o}", "definitions", &jarray1))
+		if(! wrap_json_unpack(config, "{s:o}", "definitions", &jarray1))
 		{
 			properties = loadDefinitions(jarray1);
 			conf_files_path.erase(conf_files_path.begin() + i);
@@ -264,7 +264,6 @@ int High::parseConfigAndSubscribe(const std::string& confd)
 
 int High::subscribeRegisteredObjects() const
 {
-	BPaths BindingPaths = GetBindingDirsPath();
 	int ok = 0;
 	int i = 0;
 	for(const auto &xObject : registeredObjects)
@@ -273,7 +272,7 @@ int High::subscribeRegisteredObjects() const
 		{
 			if(! obj_prop.second.lowMessageName.empty())
 			{
-				//ScanForConfig(BindingPaths.datadir, "low-can", "lua");
+				ScanForConfig(GetBindingDirPath(DATA_DIR), CTL_SCAN_RECURSIVE, "low-can", "lua");
 				i++;
 				json_object *jobj = json_object_new_object();
 				json_object_object_add(jobj,"event", json_object_new_string(obj_prop.second.lowMessageName.c_str()));

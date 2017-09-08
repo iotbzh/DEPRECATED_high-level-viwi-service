@@ -727,7 +727,6 @@ static void LuaDoAction (LuaDoActionT action, afb_req request) {
 			char *filename; char*fullpath;
 			char luaScriptPath[CONTROL_MAXPATH_LEN];
 			int index;
-			BPaths BindingPaths = GetBindingDirsPath();
 
 			// scan luascript search path once
 			static json_object *luaScriptPathJ =NULL;
@@ -746,7 +745,7 @@ static void LuaDoAction (LuaDoActionT action, afb_req request) {
 				strncpy(luaScriptPath,CONTROL_DOSCRIPT_PRE, sizeof(luaScriptPath));
 				strncat(luaScriptPath,"-", sizeof(luaScriptPath)-strlen(luaScriptPath)-1);
 				strncat(luaScriptPath,target, sizeof(luaScriptPath)-strlen(luaScriptPath)-1);
-				luaScriptPathJ= ScanForConfig(BindingPaths.etcdir, CTL_SCAN_RECURSIVE,luaScriptPath,".lua");
+				luaScriptPathJ= ScanForConfig(GetBindingDirPath(ETC_DIR), CTL_SCAN_RECURSIVE,luaScriptPath,".lua");
 			}
 			for (index=0; index < json_object_array_length(luaScriptPathJ); index++) {
 				json_object *entryJ=json_object_array_get_idx(luaScriptPathJ, index);
@@ -1002,7 +1001,7 @@ int LuaLibInit () {
 	strncat (fullprefix, "-", sizeof(fullprefix)-strlen(fullprefix)-1);
 
 	const char *dirList= getenv("CONTROL_LUA_PATH");
-	if (!dirList) dirList=BindingPaths.etcdir;
+	if (!dirList) dirList= GetBindingDirPath(ETC_DIR);
 
 	json_object *luaScriptPathJ = ScanForConfig(dirList , CTL_SCAN_RECURSIVE, fullprefix, "lua");
 
