@@ -89,8 +89,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.24748737"
-     inkscape:cx="303.38436"
-     inkscape:cy="1108.7164"
+     inkscape:cx="928.3577"
+     inkscape:cy="404.58117"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -159,54 +159,52 @@
     <flowRoot
        xml:space="preserve"
        id="root-title"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="matrix(2.3469382,0,0,2.3469382,464.13874,-1125.3671)"><flowRegion
+       transform="matrix(2.3469382,0,0,2.3469382,464.13874,-1200)"><flowRegion
          id="flowRegion4303"><rect
            id="rect4305"
            width="679.99994"
            height="141.42853"
            x="-154.28572"
-           y="359.50504"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1" /></flowRegion><flowPara
+           y="400"/>
+        </flowRegion>
+        <flowPara
          id="title"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:87.5px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1">{title}</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="root-subtitle"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="matrix(1.8523279,0,0,1.8523279,553.97647,-524.84064)"><flowRegion
+       transform="matrix(1.8523279,0,0,1.8523279,553.97647,-380)"><flowRegion
          id="flowRegion4303-6"><rect
            id="rect4305-0"
            width="852.32806"
            height="154.51677"
            x="-239.3591"
-           y="346.41681"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1" /></flowRegion><flowPara
+           y="290"/>
+        </flowRegion>
+        <flowPara
          id="subtitle"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:62.5px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1">{subtitle}</flowPara></flowRoot>    <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:173.28189087px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:62.5px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1">{subtitle}</flowPara>
+    </flowRoot>
+    <flowRoot
        id="root-version"
        xml:space="preserve"
        transform="translate(-2.0185547,164)"><flowRegion
          id="flowRegion4169"><rect
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:173.28189087px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1"
            y="501.68909"
            x="343.32947"
            height="99.591171"
            width="1117.3768"
            id="rect4171" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:68.75px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1"
          id="version">{version}</flowPara></flowRoot>    <flowRoot
+       transform="translate(-2.0185547,238)"
        xml:space="preserve"
-       id="root-date"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="matrix(4.3320472,0,0,4.3320472,1023.8272,-788.11995)"><flowRegion
-         id="flowRegion4303-6-5"><rect
-           id="rect4305-0-8"
-           width="251.40364"
-           height="23.922138"
-           x="-154.28572"
-           y="359.50504"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1" /></flowRegion><flowPara
+       id="root-date"><flowRegion
+         id="flowRegion4170"><rect
+           id="rect4172"
+           width="1117.3768"
+           height="99.591171"
+           x="343.32947"
+           y="501.68909" /></flowRegion><flowPara
          id="date"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:15.87009525px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1">{date}</flowPara></flowRoot>  </g>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;line-height:125%;font-family:Verdana;-inkscape-font-specification:'Verdana, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1">{date}</flowPara></flowRoot>  </g>
 </svg>

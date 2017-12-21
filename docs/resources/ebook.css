@@ -70,6 +70,22 @@ div.note p {
     margin-bottom: 0;
 }
 
+/* warning blocks */
+
+div.warning {
+    background: #FD9595 none repeat scroll 0% 0%;
+    color: #8A6D3B;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-bottom: 5px solid #DDD;
+    border-color: #FF6B6B;
+    page-break-inside: avoid;
+}
+
+div.warning p {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
 
 /* images, figures and captions */
 
