@@ -4,8 +4,8 @@
     "keywords": "AGL, Development, CAN, binding, binder, ViWi",
     "author": "IoT.Bzh Team",
     "website": "http://iot.bzh",
-    "published": "September 2017",
-    "version": "4.99-EERC1",
+    "published": "December 2017",
+    "version": "5.0-EE",
 
     "gitbook": "3.2.2",
     "root": "docs",
