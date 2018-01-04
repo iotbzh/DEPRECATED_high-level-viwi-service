@@ -35,9 +35,3 @@ PROJECT_TARGET_ADD(high-viwi)
 	TARGET_LINK_LIBRARIES(${TARGET_NAME}
 		${link_libraries}
 	)
-
-	# installation directory
-	INSTALL(TARGETS ${TARGET_NAME}
-		LIBRARY DESTINATION ${BINDINGS_INSTALL_DIR})
-
-        #build_widget("BINDING")
