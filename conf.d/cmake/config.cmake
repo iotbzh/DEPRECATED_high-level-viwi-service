@@ -29,13 +29,9 @@ set(PROJECT_AUTHOR_MAIL "romain.forlot@iot.bzh")
 set(PROJECT_LICENCE "APL2.0")
 set(PROJECT_LANGUAGES,"C")
 
-# Where are stored default templates files from submodule or subtree app-templates in your project tree
+# Where are stored the project configuration files
 # relative to the root project directory
-set(PROJECT_APP_TEMPLATES_DIR "conf.d/app-templates")
-
-# Where are stored config.xml.in and icon.png.in files. Template available at :
-# https://gerrit.automotivelinux.org/gerrit/#/admin/projects/apps/app-templates
-# set(PROJECT_WGT_DIR "packaging/wgt")
+set(PROJECT_CMAKE_CONF_DIR "conf.d")
 
 # Where are stored your external libraries for your project. This is 3rd party library that you don't maintain
 # but used and must be built and linked.
@@ -86,7 +82,7 @@ set(LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib64 ${CMAKE_INSTALL_PREFIX}/lib)
 
 # Optional location for config.xml.in
 # -----------------------------------
-set(WIDGET_CONFIG_TEMPLATE ${CMAKE_CURRENT_SOURCE_DIR}/conf.d/wgt/config.xml.in)
+set(WIDGET_CONFIG_TEMPLATE ${CMAKE_CURRENT_SOURCE_DIR}/conf.d/wgt/config.xml.in CACHE PATH "Path to widget config file template (config.xml.in)")
 
 # Mandatory widget Mimetype specification of the main unit
 # --------------------------------------------------------------------------
@@ -145,4 +141,4 @@ set(WIDGET_ENTRY_POINT "lib/afb-high-viwi.so")
 # This include is mandatory and MUST happens at the end
 # of this file, else you expose you to unexpected behavior
 # -----------------------------------------------------------
-include(${PROJECT_APP_TEMPLATES_DIR}/cmake/common.cmake)
+include(CMakeAfbTemplates)
