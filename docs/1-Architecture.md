@@ -4,11 +4,11 @@ This binding is intended to act between low-level binding(s) and clients. It bui
 
 Each ViWi resource can be composed of several elements, for which subscriptions will be made to the low-level binding with configurable frequencies or filters.
 
-![ViWi High Level binding architecture](images/high-level-arch.png)
+![ViWi High Level binding architecture](./images/high-level-arch.png)
 
 <!-- pagebreak -->
 
-## BRIEF VIWI DESCRIPTION
+## Brief VIWI description
 
 ViWi (Volkswagen Infotainment Web Interface) protocol defines a serie of objects, which can be queried or updated via JSon messages.
 
