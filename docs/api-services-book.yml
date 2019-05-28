@@ -6,7 +6,6 @@ books:
     description: High Leval VIWI Service documentation
     keywords:
     author: "iotbzh"
-    version: master
     chapters:
     - url: 1-Architecture.md
       destination: high-viwi-architecture.md
